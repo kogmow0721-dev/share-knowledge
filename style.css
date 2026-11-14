@@ -49,3 +49,4 @@ table.plans{width:100%;border-collapse:collapse;margin-top:12px;font-size:15px}
 span.osp.on{display:inline}
 h1 .nb{display:inline-block}
 .cards.four{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.mark{width:30px;height:30px;border-radius:8px;box-shadow:0 2px 10px rgba(109,34,196,.35);flex:none}
