@@ -1,0 +1,159 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="../apple-touch-icon.png"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Day 1：辦公室實戰，亂七八糟的表變成報表和簡報｜知識共享</title>
+<meta name="description" content="用免費版 Claude 整理訂單表、做互動儀表板、把業績表變成簡報、把會議逐字稿整理成會議記錄和信件。附示範檔案下載。">
+<link rel="stylesheet" href="../style.css">
+<style>
+.files{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:18px 0}
+.files a{display:flex;gap:12px;align-items:center;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:inherit;text-decoration:none;transition:transform .15s,border-color .15s}
+.files a:hover{transform:translateY(-2px);border-color:var(--accent)}
+.files i{flex:none;font-style:normal;font-weight:800;font-size:12px;padding:6px 8px;border-radius:8px;color:#fff;background:#1d8a4e}
+.files i.c{background:#4b6cb7}.files i.t{background:#7a6a55}
+.files small{display:block;color:var(--muted);font-size:13px}
+.prompt{position:relative;margin:14px 0;padding:14px 18px;border-radius:12px;background:var(--card);border:1px dashed var(--line);font-size:16px;line-height:1.7}
+.prompt::before{content:"你可以這樣問";display:block;font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--accent);margin-bottom:4px}
+.prompt button{position:absolute;top:10px;right:10px;font:inherit;font-size:12px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.prompt button:hover{border-color:var(--accent);color:var(--accent)}
+.pay{border-left-color:#f59e0b}
+</style></head><body><div class="wrap lesson">
+<header><a class="logo" href="../" style="color:inherit;text-decoration:none"><span class="dot"></span>知識共享 ShareKnowledge</a></header>
+<div class="crumb"><a href="../">首頁</a> / 課程</div>
+<span class="tag">Day 1</span>
+<h1>辦公室實戰：亂七八糟的表，變成報表和簡報</h1>
+<p class="lead">今天直接上工作現場，用四種工作示範：整理表格、做報表、做簡報、寫會議記錄。每一步免費版都做得到。不是這四種工作也沒關係，做法都一樣。整堂課還是那一句話：不會的，就問 Claude。</p>
+
+<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/Q6EZgd39J9w" title="Day 1｜辦公室實戰" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<p class="src">看不到影片？<a href="https://youtu.be/Q6EZgd39J9w">到 YouTube 觀看</a>。每一段的一分鐘短片在 <a href="https://www.youtube.com/playlist?list=PLLv0kZ0Yf5bI">AI 實戰短片播放清單</a>。</p>
+
+<h2>先下載示範檔案</h2>
+<p>影片裡用的四個檔案都在這裡，可以下載下來一起做。資料都是虛構的。</p>
+<div class="files">
+  <a href="files/day01/A_orders_oct.xlsx" download="網拍訂單_10月.xlsx"><i>XLSX</i><span>網拍訂單_10月<small>A｜1,000 筆，故意弄亂</small></span></a>
+  <a href="files/day01/B_cafe_sales.csv" download="咖啡店_銷售流水帳.csv"><i class="c">CSV</i><span>咖啡店_銷售流水帳<small>B｜一整年，9,197 筆</small></span></a>
+  <a href="files/day01/C_sales_oct.xlsx" download="10月業績表.xlsx"><i>XLSX</i><span>10月業績表<small>C｜業務部 6 個人</small></span></a>
+  <a href="files/day01/D_meeting_transcript.txt" download="客戶會議逐字稿.txt"><i class="t">TXT</i><span>客戶會議逐字稿<small>D｜設計工作室和客戶</small></span></a>
+</div>
+<div class="note"><b>上傳 Excel 檔前，先確認一個設定</b><br>Claude 要讀 Excel 檔、做出新的檔案，需要打開「設定（Settings）→ 功能（Capabilities）」裡的 <b>Code execution and file creation</b>。免費版預設是開的，如果你曾經關掉，記得再打開。</div>
+
+<h2>A｜網拍賣家：一句話把訂單表整理好</h2>
+<p>從賣場後台匯出來的訂單表，常常有重複的訂單、好幾種日期寫法、名字前後多打的空格。先不要急著叫它改，先問它看到什麼問題。</p>
+<ol>
+  <li>把 <b>網拍訂單_10月.xlsx</b> 拖進對話框，或按左下角的 <b>＋</b> 選檔案。</li>
+  <li>先問它這份表有什麼問題：
+    <div class="prompt">這是我網拍賣場 10 月的訂單表。這份表你看得出什麼問題嗎？<button>複製</button></div>
+    我實際測的時候，它找到 40 筆重複的訂單、5 種日期寫法、名字前後的空格、3 種 LINE Pay 寫法，還多提醒了「待出貨」的訂單太多。</li>
+  <li>再請它整理：
+    <div class="prompt">好，幫我整理成乾淨的版本，取消的訂單另外放一個工作表。<button>複製</button></div>
+    不到一分鐘，它會給你一個新的 Excel 檔，按檔案下載就好。你原本的資料它會另外留一份沒動。</li>
+  <li><b>一定要對筆數。</b>1,000 筆扣掉 40 筆重複，應該剩 960 筆。示範檔整理完是 789 筆有效訂單加上 171 筆取消，合起來剛好 960。</li>
+</ol>
+<h3>公式不用背，請它寫</h3>
+<div class="prompt">加一欄金額，用公式算，再用白話跟我解釋這個公式。<button>複製</button></div>
+<p>以後看到別人留下來、看不懂的公式，也可以貼給它問。公式跑出錯誤，就把畫面截圖給它。</p>
+<p><b>同一招也能用在：</b>補習班的學生名單、診所的預約紀錄，只要是從系統匯出來的表都可以。</p>
+
+<h2>B｜咖啡店：一年的流水帳變成會動的儀表板</h2>
+<p>不用先想好要畫哪一種圖，把你想知道的事情講出來就好。</p>
+<div class="prompt">這是我咖啡店過去一年的銷售流水帳。我想知道每個月賺多少、什麼賣最好、一天裡哪個時段最忙。幫我做成可以互動的儀表板。<button>複製</button></div>
+<p>我實際測大約一分半鐘就做好了：全年營收約 116 萬，拿鐵賣最好，早上 8 點到 10 點佔了三成營收。點一下月份，上面的數字就會換成那個月的。</p>
+<div class="note warn"><b>儀表板做得再漂亮，數字錯了就沒用</b><br>挑一個月自己加一次，或直接問它「12 月的營收你是怎麼算的？」。示範檔 2025 年 12 月的營收是 103,925 元，你可以在原本的表篩選 12 月，選取金額欄，看右下角的加總是不是同一個數字。</div>
+<div class="note pay"><b>Excel 裡的 Claude 外掛：Pro 以上才有，免費版不能用</b><br>Claude 有直接裝在 Excel、PowerPoint 裡的外掛，但要 Pro、Max、Team 或 Enterprise 方案才能用。<br><b>免費版這樣做：</b>把檔案拖進對話 → 請 Claude 處理 → 下載新的檔案。多了上傳和下載兩步，結果是一樣的。</div>
+<p><b>同一招也能用在：</b>網拍可以看哪個商品該補貨，接案的工作室可以看哪一種案子最賺。</p>
+
+<h2>C｜上班族：業績表變成五頁簡報</h2>
+<p>跟它說三件事：要給誰看、要幾頁、最想講什麼。這就是 Day 0 教的：給背景、說目的、指定格式。</p>
+<div class="prompt">這是業務部 10 月的業績表，我下週要跟主管報告。幫我做成 5 頁的簡報檔，重點放在誰達標、誰沒達標、下個月該注意什麼。<button>複製</button></div>
+<p>這一步要等比較久，我實際測大約 4 分鐘。做好之後是一個 .pptx 檔，下載下來用 PowerPoint 或 Keynote 都能打開，每一頁還附了講稿。示範檔的結果：總業績 667 萬，達成率 97.4%，3 個人達標、3 個人沒達標。</p>
+<h3>報告前，請它扮演你的主管</h3>
+<div class="prompt">請你扮演我的主管，列出他看完這份簡報最可能問的三個問題。<button>複製</button></div>
+<p>它會問很實際的問題，例如業績掉的人是人的問題還是客群的問題、流失的客戶原因是什麼。這些答案表裡沒有，報告前要先去問清楚。</p>
+<div class="note pay"><b>PowerPoint 裡的外掛，也要付費版</b><br>和 Excel 一樣，Pro 以上才有。免費版就在對話裡請它做，再下載簡報檔。</div>
+<p><b>同一招也能用在：</b>開店的人寫給廠商的合作提案、接案的人給客戶的提案簡報、老師和講師上課用的講義。</p>
+
+<h2>D｜設計工作室：逐字稿變成會議記錄和信件</h2>
+<ol>
+  <li>把 <b>客戶會議逐字稿.txt</b> 拖進對話，或直接把文字貼進去：
+    <div class="prompt">這是今天和客戶開會的逐字稿。整理成三欄表格：決議、待辦事項、負責人和期限。<button>複製</button></div>
+    十幾秒就好。示範檔裡，它還發現客戶說要回覆的 11/21 是星期六。</li>
+  <li>再請它寫信：
+    <div class="prompt">根據這次會議寫兩封信：一封給客戶，確認今天談定的內容；一封給我主管，簡短回報進度和風險。<button>複製</button></div>
+    寄出去之前一定要自己看一遍。人名、日期、金額，是最容易出錯的地方。</li>
+</ol>
+
+<h3>錄音檔可以直接丟嗎？暫時還不支援</h3>
+<p>我實際試過：錄音檔拖得進去，但 Claude 會直接告訴你它聽不到聲音。錄影檔也一樣，它看得到畫面，聽不到聲音。好消息是，它不會亂編一份假的會議記錄給你。</p>
+<p>所以現在的做法是，先把聲音變成文字，再貼給 Claude。選你用的裝置：</p>
+<div class="tabs" role="tablist">
+  <button role="tab" data-os="mac" aria-selected="true"> iPhone</button>
+  <button role="tab" data-os="win" aria-selected="false">Android・電腦</button>
+</div>
+<div class="osp" data-os="mac">
+  <h3>iPhone：用「備忘錄」錄音</h3>
+  <ol>
+    <li>打開「備忘錄」，新增一則備忘錄，點 <b>迴紋針</b> 圖示，選「錄音」。</li>
+    <li>開會時開始錄，錄完按停止。</li>
+    <li>點開錄音，就看得到逐字稿。按「⋯」選「拷貝逐字稿」，貼給 Claude。</li>
+  </ol>
+  <p class="src">需要 iPhone 12 以上。Apple 官方列出支援「中文（台灣）」。這一段我是照 Apple 的官方說明寫的，還沒有每一款手機都實際測過。</p>
+</div>
+<div class="osp" data-os="win">
+  <h3>Android 或電腦：Google 文件的「語音輸入」</h3>
+  <ol>
+    <li>用 Chrome 打開一份新的 Google 文件。</li>
+    <li>上方選單「工具」→「語音輸入」，語言選中文。</li>
+    <li>按麥克風，它會邊聽邊打字。開會時開著，結束後把文字全選，貼給 Claude。</li>
+  </ol>
+  <p class="src">語音輸入只能聽現場的聲音，不能上傳錄好的檔案。Word 網頁版的「轉錄」可以上傳錄音檔，但要有 Microsoft 365 訂閱。</p>
+</div>
+<div class="note"><b>預告：Claude Code</b><br>錄音檔直接變成會議記錄這件事，Claude Code 做得到。它是付費版的功能，Day 4 會教。</div>
+<p><b>同一招也能用在：</b>跟廠商談進貨、每週的部門例會。</p>
+
+<h2>今天的重點：免費版和付費版</h2>
+<table class="plans">
+  <tr><th>功能</th><th>免費版</th><th>Pro 以上</th></tr>
+  <tr><td>上傳 Excel、CSV、文字檔來分析</td><td>✓</td><td>✓</td></tr>
+  <tr><td>做出 Excel、PowerPoint、Word、PDF 檔</td><td>✓</td><td>✓</td></tr>
+  <tr><td>會動的儀表板、小工具</td><td>✓</td><td>✓</td></tr>
+  <tr><td>Excel、PowerPoint 裡的 Claude 外掛</td><td>✕</td><td>✓</td></tr>
+  <tr><td>直接聽錄音檔</td><td colspan="2">暫時還不支援，先轉成文字</td></tr>
+</table>
+
+<h2>今天的作業</h2>
+<ul>
+  <li>拿一份你自己工作上的表丟給 Claude。先問它：「這份表你看得出什麼問題嗎？」</li>
+  <li>再請它整理，做成圖表或簡報。做完記得自己抽查數字。</li>
+  <li>下次開會，試試看錄成文字，請它整理成會議記錄。</li>
+  <li>過程中卡住了，就截圖問 Claude。</li>
+</ul>
+<p>下一課：Day 2，讓 Claude 連上你的信箱和日曆。</p>
+
+<h2>官方來源</h2>
+<ul class="src">
+  <li><a href="https://support.claude.com/en/articles/12111783-create-and-edit-files-with-claude">Claude：做出和編輯檔案（免費版可用、設定位置）</a></li>
+  <li><a href="https://support.claude.com/en/articles/8241126-what-kinds-of-documents-can-i-upload-to-claude">Claude：可以上傳哪些檔案</a></li>
+  <li><a href="https://support.claude.com/en/articles/12650343-claude-in-excel">Claude：Excel 外掛（適用方案）</a></li>
+  <li><a href="https://support.claude.com/en/articles/13521390-use-claude-in-powerpoint">Claude：PowerPoint 外掛（適用方案）</a></li>
+  <li><a href="https://claude.com/pricing">Claude：方案與價格</a></li>
+  <li><a href="https://support.apple.com/zh-tw/guide/iphone/iph00953a982/ios">Apple：在備忘錄檢視錄音逐字稿</a></li>
+  <li><a href="https://support.google.com/docs/answer/4492226">Google：在 Google 文件使用語音輸入</a></li>
+  <li><a href="https://support.microsoft.com/en-us/office/transcribe-your-recordings-7fc2efec-245e-45f0-b053-2a97531ecf57">Microsoft：Word 轉錄錄音</a></li>
+</ul>
+<p class="src">資料最後驗證：2026 年 11 月 14 日，四個示範都用免費帳號實際測過。AI 工具更新很快，功能和價格請以官方網站為準。</p>
+
+<footer><a href="../">首頁</a><a href="../privacy.html">隱私權政策</a><span>© 2026 知識共享</span></footer>
+</div>
+<script>
+(function(){
+  var saved; try{saved=localStorage.getItem('dev1')}catch(e){}
+  var os = saved || (/iPhone|iPad|Mac/i.test(navigator.userAgent)?'mac':'win');
+  function set(o){os=o;try{localStorage.setItem('dev1',o)}catch(e){}
+    document.querySelectorAll('.tabs button').forEach(function(b){b.setAttribute('aria-selected',b.dataset.os===o)});
+    document.querySelectorAll('.osp').forEach(function(p){p.classList.toggle('on',p.dataset.os===o)});}
+  document.querySelectorAll('.tabs button').forEach(function(b){b.onclick=function(){set(b.dataset.os)}});
+  set(os);
+  document.querySelectorAll('.prompt button').forEach(function(b){b.onclick=function(){
+    var t=b.parentNode.firstChild.textContent.trim();
+    (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){b.textContent='已複製';setTimeout(function(){b.textContent='複製'},1500)},function(){});
+  }});
+})();
+</script>
+</body></html>
