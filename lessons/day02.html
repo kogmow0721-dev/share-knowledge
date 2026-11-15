@@ -1,0 +1,130 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="../apple-touch-icon.png"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Day 2：連接你的工具，讓 Claude 自己讀信、算報價、約時間｜知識共享</title>
+<meta name="description" content="用免費版 Claude 接上 Gmail 和 Google 日曆：一句話找出還沒回的詢價信、照價目表算報價、回信存成草稿、把會議排進日曆。附示範檔案下載與安全設定。">
+<link rel="stylesheet" href="../style.css">
+<style>
+.files{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:18px 0}
+.files a{display:flex;gap:12px;align-items:center;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:inherit;text-decoration:none;transition:transform .15s,border-color .15s}
+.files a:hover{transform:translateY(-2px);border-color:var(--accent)}
+.files i{flex:none;font-style:normal;font-weight:800;font-size:12px;padding:6px 8px;border-radius:8px;color:#fff;background:#1d8a4e}
+.files i.c{background:#4b6cb7}.files i.t{background:#7a6a55}
+.files small{display:block;color:var(--muted);font-size:13px}
+.prompt{position:relative;margin:14px 0;padding:14px 18px;border-radius:12px;background:var(--card);border:1px dashed var(--line);font-size:16px;line-height:1.7}
+.prompt::before{content:"你可以這樣問";display:block;font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--accent);margin-bottom:4px}
+.prompt button{position:absolute;top:10px;right:10px;font:inherit;font-size:12px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.prompt button:hover{border-color:var(--accent);color:var(--accent)}
+.pay{border-left-color:#f59e0b}
+</style></head><body><div class="wrap lesson">
+<header><a class="logo" href="../" style="color:inherit;text-decoration:none"><picture><source srcset="../mark-dark.svg" media="(prefers-color-scheme: dark)"><img class="mark" src="../mark.svg" alt=""></picture>知識共享 ShareKnowledge</a></header>
+<div class="crumb"><a href="../">首頁</a> / 課程</div>
+<span class="tag">Day 2</span>
+<h1>連接你的工具：讓 Claude 自己讀信、算報價、約時間</h1>
+<p class="lead">前兩課都是你把資料搬給 Claude。今天換它自己去拿：接上信箱和日曆之後，一封客人的詢價信，從讀信、算報價、寫回信，一路做到把試吃時間排進日曆。每一步免費版都做得到。整堂課還是那一句話：不會的，就問 Claude。</p>
+
+<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/DJ7DwtBbqMQ?list=PLaAuH9dstA6Q" title="Day 2｜連接你的工具" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<p class="src">看不到影片？<a href="https://www.youtube.com/watch?v=DJ7DwtBbqMQ&amp;list=PLaAuH9dstA6Q">到 YouTube 觀看</a>。每一段的一分鐘短片在 <a href="https://www.youtube.com/playlist?list=PLLv0kZ0Yf5bI">AI 實戰短片播放清單</a>。</p>
+
+<h2>先下載示範檔案</h2>
+<p>影片裡的情境是一間手工甜點工作室，年底收到三封詢價信。這兩個檔案可以下載下來一起做，資料都是虛構的。</p>
+<div class="files">
+  <a href="files/day02/price_list.xlsx" download="甜日子_禮盒價目表.xlsx"><i>XLSX</i><span>甜日子_禮盒價目表<small>C｜品項、數量折扣、加購與運費規則</small></span></a>
+  <a href="files/day02/requirements.xlsx" download="尾牙禮盒需求表.xlsx"><i>XLSX</i><span>尾牙禮盒需求表<small>B｜客人信裡的附件</small></span></a>
+</div>
+<p>想完整重現的話，把需求表當附件寄一封信給自己，主旨寫「【詢價】尾牙禮盒 200 份」，就有一封可以練習的詢價信了。</p>
+
+<h2>A｜連接器是什麼、怎麼接上</h2>
+<p>把 Claude 想成一台電器，你的信箱、日曆、雲端硬碟就是牆上的插座。<b>連接器</b>就是那條線，插上去，Claude 就能直接用你的信箱和日曆。背後的插頭規格叫 <b>MCP</b>（Model Context Protocol），是 Anthropic 提出的開放標準，名字聽過就好。</p>
+<ol>
+  <li>用電腦打開 <a href="https://claude.ai">claude.ai</a>，在左邊的選單找到 <b>自訂（Customize）</b>，點 <b>連接器（Connectors）</b>。</li>
+  <li>在目錄裡點 <b>Gmail</b>，按 <b>連接至 Claude</b>。</li>
+  <li>畫面會跳到 Google。選你的帳號，按 <b>繼續</b>。</li>
+  <li>下一頁會列出它要的權限：查看你的電子郵件和設定、管理草稿和傳送電子郵件、讀取撰寫及傳送電子郵件。<b>勾選框預設沒有勾，要自己勾</b>，看清楚再按 <b>繼續</b>。</li>
+  <li>回到 Claude，看到 <b>已連接</b> 就接好了。Google 日曆、Google 雲端硬碟也是一樣的做法。</li>
+</ol>
+<div class="note"><b>找不到「連接器」？</b><br>舊的教學會寫「設定（Settings）→ 連接器」。這一頁已經搬到側邊欄的「自訂」裡了。你的介面如果是英文，對照括號裡的英文找就可以。</div>
+<div class="note"><b>手機也能用</b><br>在電腦上接好之後，手機版 Claude 下次登入就能直接用。直接在手機上新增連接器目前還是測試版，建議先用電腦接。</div>
+<p><b>同一招也能用在：</b>用 Outlook 的人可以接 Microsoft 365 連接器，個人帳號要從網頁版連。目錄裡有一千多個連接器，Notion、Canva、Slack 都有。台灣人最常用的 LINE，目前還沒有。</p>
+
+<h2>B｜一句話，找出該回的信</h2>
+<p>原本的做法是在廣告信和通知信裡一封一封找，再把數量、預算、期限抄到筆記本，忙的時候最容易漏回。</p>
+<div class="prompt">幫我找出這週收件匣裡還沒回覆的客人詢價信，整理成一張表：誰寄的、要訂什麼、幾份、預算、什麼時候要。廣告信和通知信不用列。<button>複製</button></div>
+<p>它從六封信裡挑出三封客人的詢價信，還交代了哪三封被它排除。讀信這一步不會跳出任何詢問。</p>
+<h3>信裡的附件，它也打得開</h3>
+<div class="prompt">把禾森科技那封信的附件打開，把裡面的需求補進表格。<button>複製</button></div>
+<p>示範檔的附件是一份試算表，它把 200 份、每份 500 元以內、不能含酒精、20 份蛋奶素、1/20 前送到，全部讀出來了，還提醒「500 元已經包含提袋和貼紙」。</p>
+<div class="note warn"><b>關於附件</b><br>官方說明寫 Gmail 連接器「只讀得到附件的檔名，讀不到內容」，示範裡的試算表附件是讀得到的，其他格式就不一定。萬一它說讀不到，就把附件下載下來，拖進對話框，這是 Day 0 教過的做法。</div>
+<p><b>同一招也能用在：</b>找主管交辦還沒回的信、客戶上週提的修改意見、廠商寄來的報價。</p>
+
+<h2>C｜報價、回信、約時間，一次做完</h2>
+<h3>照你的價目表算報價</h3>
+<p>把 <b>甜日子_禮盒價目表.xlsx</b> 拖進對話框：</p>
+<div class="prompt">這是我的價目表。照上面的規則，幫我算出三位客人的報價：適合的品項、每份多少、總價、運費。<button>複製</button></div>
+<p>三位客人適用的規則都不一樣：200 份打 85 折、貼紙免費、提袋另外加；80 份打 95 折；35 份沒有折扣，還要加運費。它算出的三個金額是 97,200、21,280、17,050 元。它還多給了一個比較省的方案，並提醒其中一款含堅果，要先問客人。</p>
+<div class="note warn"><b>數字一定要自己核對一次</b><br>挑一位客人，照價目表自己按一次計算機。規則越多，越值得抽查。</div>
+<h3>查日曆、寫回信、存成草稿</h3>
+<div class="prompt">幫我回禾森科技：報價用綜合禮盒。先查我下週的日曆，挑三個可以的時段給她選來試吃。寫好存成草稿，先不要寄。<button>複製</button></div>
+<p>它會先看你的日曆，避開已經排的事，挑三個時段寫進信裡。要存草稿的時候，畫面會跳出<b>核准提示</b>，有三個按鈕：拒絕、允許一次、永遠允許。按 <b>允許一次</b>。草稿會出現在你 Gmail 的草稿匣，接在客人那封信底下。</p>
+<p><b>草稿一定要自己看過再寄。</b>金額、日期、人名最容易出錯。它還會自己列出「寄出前請檢查」的清單，連收件人位址可能不對都提醒了。</p>
+<h3>客人選好了，排進日曆</h3>
+<div class="prompt">雅婷選 11/19（四）下午兩點。幫我排進日曆，一小時，標題寫「禾森科技 試吃」。<button>複製</button></div>
+<p>示範時出了一個小狀況：它第一次把時區弄錯，排成晚上十點，自己發現後改回下午兩點，也老實說了。所以排完之後，自己打開日曆看一眼。</p>
+<p><b>同一招也能用在：</b>業務約客戶拜訪、老師約家長面談、接案的人約提案時間。</p>
+
+<h2>D｜讓它讀信之前，先做三件事</h2>
+<ol>
+  <li><b>寄信、刪信的權限，留在「需要核准」。</b>到「自訂 → 連接器 → Gmail」看 <b>工具權限</b>：唯讀工具預設是「永遠允許」，寫入和刪除工具預設是「需要核准」。Claude 真的寄得出信，所以這個設定不要改成永遠允許。</li>
+  <li><b>不用了就拔掉。</b>同一頁有 <b>中斷連接</b> 按鈕。Google 這邊也能拔：到 <a href="https://myaccount.google.com/connections">myaccount.google.com/connections</a> 找到 Claude，選擇刪除連線。</li>
+  <li><b>小心陌生人的信。</b>信裡可能混進一段寫給 Claude 看的指令，例如叫它把客戶資料寄給別人。Claude 有內建的防護，可是沒有哪一種防護保證不出錯，所以每一次跳出核准提示，都要看清楚再按。</li>
+</ol>
+<div class="note"><b>信的內容會被拿去訓練嗎？</b><br>官方的說法是：連接器讀到的 Gmail、日曆、雲端硬碟資料不會拿去訓練模型。不過個人方案如果開了「協助改進 Claude」，你從連接器複製貼進對話的內容可能會被用到。這個開關在「設定 → 隱私權」。</div>
+
+<h2>今天的重點：免費版做得到什麼</h2>
+<table class="plans">
+  <tr><th>功能</th><th>免費版</th><th>Pro 以上</th></tr>
+  <tr><td>接上 Gmail、Google 日曆、Google 雲端硬碟</td><td>✓</td><td>✓</td></tr>
+  <tr><td>搜尋信件、讀信、讀試算表附件</td><td>✓</td><td>✓</td></tr>
+  <tr><td>回信存成草稿（要按核准）</td><td>✓</td><td>✓</td></tr>
+  <tr><td>查日曆、建立活動（要按核准）</td><td>✓</td><td>✓</td></tr>
+  <tr><td>自己加自訂連接器</td><td>限 1 個</td><td>✓</td></tr>
+</table>
+
+<h2>今天的作業</h2>
+<ul>
+  <li>接上一個你每天在用的服務，信箱或日曆都可以。</li>
+  <li>請它找出這週還沒回的信，幫你擬回信，存成草稿。寄之前自己看一遍。</li>
+  <li>不知道要接什麼，就問它：「我平常用……，有哪些連接器可以幫我省時間？」</li>
+  <li>過程中卡住了，就截圖問 Claude。</li>
+</ul>
+<p>下一課：Day 3，把你自己的做法做成 Claude 的 Skills 技能包。</p>
+
+<h2>官方來源</h2>
+<ul class="src">
+  <li><a href="https://support.claude.com/en/articles/11176164-use-connectors-to-extend-claude-s-capabilities">Claude：用連接器擴充功能（適用方案、新增方式）</a></li>
+  <li><a href="https://support.claude.com/en/articles/10166901-use-google-workspace-connectors">Claude：Google Workspace 連接器（Gmail、日曆、雲端硬碟能做什麼）</a></li>
+  <li><a href="https://claude.com/docs/connectors/getting-started">Claude：連接器入門（核准提示、工具權限）</a></li>
+  <li><a href="https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp">Claude：自訂連接器與 MCP、安全注意事項</a></li>
+  <li><a href="https://claude.com/docs/connectors/microsoft/365">Claude：Microsoft 365 連接器</a></li>
+  <li><a href="https://claude.com/connectors">Claude：連接器目錄</a></li>
+  <li><a href="https://claude.com/pricing">Claude：方案與價格</a></li>
+  <li><a href="https://myaccount.google.com/connections">Google 帳戶：第三方連線管理</a></li>
+</ul>
+<p class="src">資料更新日期：2026 年 11 月 14 日。AI 工具更新很快，功能和價格請以官方網站為準。</p>
+
+<footer><a href="../">首頁</a><a href="../privacy.html">隱私權政策</a><span>© 2026 知識共享</span></footer>
+</div>
+<script>
+(function(){
+  var saved; try{saved=localStorage.getItem('dev1')}catch(e){}
+  var os = saved || (/iPhone|iPad|Mac/i.test(navigator.userAgent)?'mac':'win');
+  function set(o){os=o;try{localStorage.setItem('dev1',o)}catch(e){}
+    document.querySelectorAll('.tabs button').forEach(function(b){b.setAttribute('aria-selected',b.dataset.os===o)});
+    document.querySelectorAll('.osp').forEach(function(p){p.classList.toggle('on',p.dataset.os===o)});}
+  document.querySelectorAll('.tabs button').forEach(function(b){b.onclick=function(){set(b.dataset.os)}});
+  set(os);
+  document.querySelectorAll('.prompt button').forEach(function(b){b.onclick=function(){
+    var t=b.parentNode.firstChild.textContent.trim();
+    (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){b.textContent='已複製';setTimeout(function(){b.textContent='複製'},1500)},function(){});
+  }});
+})();
+</script>
+</body></html>
