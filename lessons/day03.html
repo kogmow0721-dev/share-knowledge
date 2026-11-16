@@ -1,0 +1,173 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="../apple-touch-icon.png"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Day 3：Skills 技能包，做法只講一次，以後一句話就好｜知識共享</title>
+<meta name="description" content="用免費版 Claude 把每週都要重貼的規矩做成 Skill：裝一個別人做好的、把自己的做法存成 Skill、打開來看和修改，還有安裝之前該注意的三件事。附示範成績表與提示詞。">
+<link rel="stylesheet" href="../style.css">
+<style>
+.files{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:18px 0}
+.files a{display:flex;gap:12px;align-items:center;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:inherit;text-decoration:none;transition:transform .15s,border-color .15s}
+.files a:hover{transform:translateY(-2px);border-color:var(--accent)}
+.files i{flex:none;font-style:normal;font-weight:800;font-size:12px;padding:6px 8px;border-radius:8px;color:#fff;background:#1d8a4e}
+.files i.c{background:#4b6cb7}.files i.t{background:#7a6a55}
+.files small{display:block;color:var(--muted);font-size:13px}
+.prompt{position:relative;margin:14px 0;padding:14px 18px;border-radius:12px;background:var(--card);border:1px dashed var(--line);font-size:16px;line-height:1.7;overflow-wrap:anywhere}
+.prompt::before{content:"你可以這樣問";display:block;font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--accent);margin-bottom:4px}
+.prompt.pre{white-space:pre-line}
+.prompt button{position:absolute;top:10px;right:10px;font:inherit;font-size:12px;line-height:1.7;white-space:nowrap;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.prompt button:hover{border-color:var(--accent);color:var(--accent)}
+.three{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:18px 0}
+.three div{padding:16px 18px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
+.three div.on{border-color:var(--accent);box-shadow:0 8px 30px rgba(0,0,0,.12)}
+.three b{display:block;margin-bottom:2px}
+.three span{color:var(--muted);font-size:14px}
+</style></head><body><div class="wrap lesson">
+<header><a class="logo" href="../" style="color:inherit;text-decoration:none"><picture><source srcset="../mark-dark.svg" media="(prefers-color-scheme: dark)"><img class="mark" src="../mark.svg" alt=""></picture>知識共享 ShareKnowledge</a></header>
+<div class="crumb"><a href="../">首頁</a> / 課程</div>
+<span class="tag">Day 3</span>
+<h1>Skills 技能包：做法只講一次，以後一句話就好</h1>
+<p class="lead">星期五晚上九點，美語補習班的老師還有三十份學習週報要寫。她請 Claude 幫忙，可是每個星期都要把同一大段規矩再貼一次，有一次貼漏了一條，家長的訊息馬上就來了。今天我們把這套做法做成 Claude 的 Skill，中文叫技能包，只要告訴它一次，以後一句話就好。每一步免費版都做得到。整堂課還是那一句話：不會的，就問 Claude。</p>
+
+<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/sfEoKmiVVqA?list=PLaAuH9dstA6Q" title="Day 3｜Skills 技能包" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<p class="src">看不到影片？<a href="https://www.youtube.com/watch?v=sfEoKmiVVqA&amp;list=PLaAuH9dstA6Q">到 YouTube 觀看</a>。每一段的一分鐘短片在 <a href="https://www.youtube.com/playlist?list=PLLv0kZ0Yf5bI">AI 實戰短片播放清單</a>。</p>
+
+<h2>先下載示範檔案</h2>
+<p>影片裡的情境是一間兒童美語補習班「星星美語」。老師每個星期五要替 Bear 班的 30 位學生各寫一份學習週報，用 LINE 傳給家長，寫的時候要守七條規矩。這三個檔案可以下載下來一起做，學生和家長的姓名全部是虛構的。</p>
+<div class="files">
+  <a href="files/day03/bear_week1.xlsx" download="星星美語_Bear班_第1週成績表.xlsx"><i>XLSX</i><span>Bear 班第 1 週成績表<small>C｜第一次做週報時用</small></span></a>
+  <a href="files/day03/bear_week2.xlsx" download="星星美語_Bear班_第2週成績表.xlsx"><i>XLSX</i><span>Bear 班第 2 週成績表<small>C｜Skill 存好之後，拿來驗收</small></span></a>
+  <a href="files/day03/report_rules.txt" download="週報規矩.txt"><i class="t">TXT</i><span>週報規矩<small>C｜七條規矩的原文</small></span></a>
+</div>
+<p>成績表裡每位學生有一列，欄位是姓名、家長稱呼、前兩週小考、上週小考、本週小考、口說評等、出缺席、老師速記和本月學費。</p>
+
+<h2>A｜Skill 是什麼、在哪裡</h2>
+<p>Skill 像新同事報到時拿到的工作手冊。你裝一次，Claude 以後碰到這件工作，就自己翻開手冊照著做。它跟提示詞、跟上一課的連接器，各自負責不同的事。</p>
+<div class="three">
+  <div><b>提示詞</b><span>每一次都要自己貼的那段話。</span></div>
+  <div class="on"><b>Skill 技能包</b><span>一本工作手冊，裝一次就一直在，告訴 Claude 拿到資料之後怎麼做。</span></div>
+  <div><b>連接器</b><span>讓 Claude 拿得到你的信箱、日曆這些資料。</span></div>
+</div>
+<h3>Skills 放在哪裡</h3>
+<ol>
+  <li>用電腦打開 <a href="https://claude.ai">claude.ai</a>，在左邊的選單點 <b>自訂</b>，再點 <b>Skills</b>。</li>
+  <li>這一頁有兩個分頁。<b>您的項目</b> 列出你的帳號已經有的 Skill，<b>探索</b> 放的是別人做好的。</li>
+  <li>免費帳號的「您的項目」裡，本來就有四個官方先裝好的 Skill：<code>google-workspace</code>、<code>skill-creator</code>、<code>import-memory</code>、<code>morning</code>。其中 skill-creator 專門幫你做 Skill，C 段會用到。</li>
+  <li>右上角的 <b>新增</b> 按下去有三項：<b>上傳 Skill</b> 用來裝別人給你的檔案，<b>建立 Skill</b> 是自己填，<b>使用 Claude 建立</b> 是請 Claude 幫你做。</li>
+</ol>
+<div class="note"><b>找不到 Skills？</b><br>舊的教學會寫「設定 → 功能」。這一頁已經搬到側邊欄的「自訂」裡了，設定頁現在只剩一句「Skills 已移至自訂」。</div>
+<div class="note"><b>「使用 Claude 建立」會跳出一句英文</b><br>按下去之後，Claude 會開一個新對話，對話框裡已經先填好一句英文，意思是請 Claude 先問你這個 Skill 要做什麼。把它送出去，再用中文回答 Claude 的問題就可以。</div>
+<h3>什麼事適合做成 Skill</h3>
+<p>每個星期都要做、規矩又多的事最適合，例如健身教練給學員的回饋、美容師的術後關懷訊息、業務每週的客戶報告。拿不定主意的時候，可以直接問 Claude：</p>
+<div class="prompt">我每週都要做……，適合做成 Skill 嗎？<button>複製</button></div>
+<p>把刪節號換成你自己的工作再送出。</p>
+
+<h2>B｜裝一個別人做好的：做招生海報</h2>
+<p>補習班下個月要招寒假班，需要一張海報。我們到「探索」裝一個專門做海報的 Skill，名字叫 <code>canvas-design</code>。</p>
+<ol>
+  <li>在 Skills 這一頁點 <b>探索</b> 分頁。</li>
+  <li>在搜尋框輸入 <code>canvas-design</code>。</li>
+  <li>點進去，先看 <b>作者</b> 是誰。這一個的作者是 Anthropic，也就是做 Claude 的公司。</li>
+  <li>按 <b>新增</b>。回到「您的項目」，清單裡多了 canvas-design，過程中不用下載任何東西。</li>
+</ol>
+<div class="note"><b>「探索」裡的東西不全是 Skill</b><br>探索裡混著 Skill、連接器和外掛程式。有些項目標著「社群」，那是一般人發布的，裝之前要先看過 D 段的三件事。</div>
+<h3>裝好了，Claude 不一定每一次都會用</h3>
+<p>我裝好之後開了一個新對話，直接說「做一張招生海報」。Claude 做出了一張海報，可是它用的是本來就內建的設計功能，沒有用到剛裝的 canvas-design。</p>
+<p>想確定 Claude 用上某一個 Skill，就在對話框先打一個斜線 <code>/</code>。你裝過的 Skill 都會列出來，選 canvas-design，後面再接著寫你的要求：</p>
+<div class="prompt">/canvas-design 幫我做一張兒童美語補習班的寒假班招生海報。補習班叫「星星美語」，寒假班 1/25 到 2/5，週一到週五早上 9 點到 12 點，招收小一到小四，12/31 前報名打九折。<button>複製</button></div>
+<p>課程內容換成你自己的再送出。這一次 Claude 先讀了那份 Skill 才動手，做出一張 3000×4243 的 PNG 圖檔和一份 A3 比例的 PDF，可以直接送印。兩次做出來的海報長得完全不一樣。</p>
+<p><b>同一招也能用在：</b>你以後自己做的 Skill 一樣可以用斜線指定。</p>
+
+<h2>C｜把自己的做法做成 Skill</h2>
+<p>星星美語的老師原本每個星期五大概要花兩個半小時寫週報。我們分三步，把她的做法交給 Claude。</p>
+<h3>第一步：先照平常的方式做一次</h3>
+<p>開一個新對話，把 <b>星星美語_Bear班_第1週成績表.xlsx</b> 拖進對話框，再貼上這一段：</p>
+<div class="prompt pre">附件是 Bear 班這週的成績表，請幫我寫每位學生的學習週報，我要用 LINE 傳給家長。請照下面的規矩寫：
+1. 開頭先稱呼家長，照成績表的「家長稱呼」欄寫，例如「陳媽媽您好」。
+2. 先寫一件孩子這週具體的進步，從「老師速記」或成績裡找。
+3. 小考分數比上週低的孩子，不用「退步」「不專心」「不認真」這類負面字眼，改寫一件在家可以做的小事，例如每天睡前念五個單字。
+4. 不拿孩子跟其他同學比，同一家的兄弟姊妹也不互相比較。
+5. 這週有請假的，附上補課時間：週三 18:30 或週六 10:00，請家長回覆要哪一個時段。
+6. 「本月學費」欄是「未繳」的，結尾才加一句繳費提醒；已繳的不要提到學費。
+7. 每則訊息不超過 150 個字，用家長在 LINE 上看得懂的口氣，不用條列，不用表情符號。<button>複製</button></div>
+<p>Claude 會寫出 30 則訊息。有不滿意的地方，就在同一個對話裡來回改到滿意，因為下一步存下來的就是這個對話裡的做法。下載的「週報規矩.txt」最後還有一行，是請 Claude 把小考連續兩週下降的孩子另外列一張名單，建議老師改打電話給家長，這一行可以跟七條規矩一起貼上。</p>
+<h3>第二步：請 Claude 把做法存成 Skill</h3>
+<p>改到滿意之後，在同一個對話裡說：</p>
+<div class="prompt">我每個星期五都要做這件事，請把剛剛這套做法做成一個 Skill，以後我只要丟成績表給你，說「做這週的週報」就可以。<button>複製</button></div>
+<ol>
+  <li>Claude 會把剛才的做法整理成一份手冊，裡面寫了什麼時候用、七條規矩，還附了範例。</li>
+  <li>對話裡會出現一張卡片，按卡片上的 <b>儲存 Skill</b>。</li>
+  <li>畫面顯示 <b>已儲存 Skill</b> 就完成了。你不用下載壓縮檔，也不用自己寫任何東西。</li>
+</ol>
+<h3>第三步：開新對話驗收</h3>
+<p>驗收一定要 <b>開一個新的對話</b>。留在原本的對話裡，Claude 讀得到前面貼過的規矩，你就分不出它有沒有用上 Skill。在新對話裡把 <b>星星美語_Bear班_第2週成績表.xlsx</b> 拖進去，只說一句：</p>
+<div class="prompt">做這週的週報<button>複製</button></div>
+<p>30 份都寫好了。這一次沒有貼任何規矩，它照著 Skill 裡的做法寫，還另外列出建議改打電話的家長名單。</p>
+<div class="note"><b>怎麼知道 Claude 有用上 Skill</b><br>回答的上方有一行灰色的小字「已執行 3 個指令，已讀取一個檔案」。點開來看第一步，會看到 Claude 讀了你剛才存的那個 Skill。</div>
+<p><b>同一招也能用在：</b>每週回覆客人的固定格式、每個月的報告、每天整理訂單的步驟。</p>
+
+<h2>D｜打開來看、修改、該注意的三件事</h2>
+<h3>打開來看，裡面就是文字</h3>
+<p>到「自訂 → Skills → 您的項目」，點開剛才存的那一個。<b>總覽</b> 有一段說明，寫的是什麼時候該用這個 Skill。Claude 平常只看 Skill 的名稱和這一段說明，來決定要不要用它，所以說明寫得越清楚，Claude 越不會漏掉。<b>內含項目</b> 裡看得到一個叫 <code>SKILL.md</code> 的檔案，打開來就是一份你也看得懂的文字。</p>
+<h3>想加一條規矩，要從 Skill 的頁面改</h3>
+<div class="note warn"><b>容易踩到的坑</b><br>在一般的對話裡說「把這條規矩更新進 Skill」，Claude 會回答已經更新了。可是回到 Skill 的頁面一看，帳號裡存的仍然是 v1，新規矩沒有存進去。</div>
+<p>正確的做法是從 Skill 自己的頁面開始：</p>
+<ol>
+  <li>在 Skill 的頁面按右上角的 <b>⋯</b>，選 <b>使用 Claude 編輯</b>。</li>
+  <li>Claude 會開一個對話，在裡面說你要改什麼，例如下面這一段。</li>
+  <li>對話裡會出現一張卡片，按上面的 <b>更新</b>。按了這一下，修改才會存進帳號。</li>
+  <li>畫面顯示 <b>已更新</b>，旁邊有 <b>復原</b>，改錯了可以按它退回去。</li>
+  <li>回到 Skill 的頁面，確認版本從 v1 變成 v2。</li>
+</ol>
+<div class="prompt">請加一條規矩：每則訊息的最後一句，固定寫「下週小考範圍：」加上範圍。範圍我會寫在成績表的「說明」分頁；找不到就先問我，不要自己猜。<button>複製</button></div>
+<h3>「⋯」選單裡還有什麼</h3>
+<p>選單一共七項：在對話中試用、使用 Claude 編輯、重新命名、取代、建立副本、下載、移除。</p>
+<p>免費版想把 Skill 給同事，就按 <b>下載</b>，把下載的檔案傳給對方，對方再用「新增」裡的 <b>上傳 Skill</b> 裝起來。直接分享給同事、發布給整個組織這兩個功能，目前是 Team 和 Enterprise 方案才有。</p>
+<div class="note"><b>Skill 叫不出來？</b><br>先到「設定 → 功能」，檢查 <b>程式碼執行與檔案建立</b> 有沒有開著。這個開關預設是開的，關掉之後 Skill 就用不了。</div>
+<h3>該注意的三件事</h3>
+<ol>
+  <li><b>別人給的 Skill，先打開讀過再裝。</b>別人分享給你的、你自己上傳的 Skill，官方的原文是「aren't reviewed by Anthropic」，意思是 Anthropic 沒有審查過。裝之前先看作者是誰，再打開 SKILL.md 把內容讀一遍，看不懂的地方就貼給 Claude 問。</li>
+  <li><b>Skill 裡不要放個資、密碼和金鑰。</b>Skill 可以下載，也可以傳給別人，寫在裡面的東西會跟著一起出去。學生名單這類資料，每次用檔案交給 Claude 就好。</li>
+  <li><b>不用了就關掉或移除。</b>每個 Skill 旁邊都有開關，「⋯」選單裡也有「移除」。</li>
+</ol>
+
+<h2>今天的重點：免費版做得到什麼</h2>
+<table class="plans">
+  <tr><th>功能</th><th>免費版</th></tr>
+  <tr><td>使用官方先裝好的四個 Skill</td><td>✓</td></tr>
+  <tr><td>從「探索」新增別人做好的 Skill</td><td>✓</td></tr>
+  <tr><td>請 Claude 把做法做成 Skill 並儲存</td><td>✓</td></tr>
+  <tr><td>用「使用 Claude 編輯」修改、復原</td><td>✓</td></tr>
+  <tr><td>下載 Skill 檔案、上傳 Skill</td><td>✓</td></tr>
+  <tr><td>分享給同事、發布給整個組織</td><td>目前要 Team、Enterprise 方案</td></tr>
+</table>
+
+<h2>今天的作業</h2>
+<ul>
+  <li>挑一件你每個星期都要做的事，回覆客人、寫報告、整理訂單都可以。</li>
+  <li>先跟 Claude 做一次，把你的規矩都講出來，改到滿意。</li>
+  <li>說「把這套做法做成一個 Skill」，按儲存，再開一個新對話試一次。</li>
+  <li>不知道哪件事適合，就問它：「我每週都要做這件事，適合做成 Skill 嗎？」過程中卡住了，就截圖問 Claude。</li>
+</ul>
+<p>下一課：Day 4，Claude Code 跟一般的 Claude 差在哪。Claude Code 是住在你電腦裡的 Claude，今天做的 Skill 搬過去一樣能用。</p>
+
+<h2>官方來源</h2>
+<ul class="src">
+  <li><a href="https://support.claude.com/en/articles/12512176-what-are-skills">Claude 說明中心：Skills 是什麼（寫明 Free 方案可以用）</a></li>
+  <li><a href="https://support.claude.com/en/articles/12512180">Claude 說明中心：怎麼使用 Skills、怎麼上傳</a></li>
+  <li><a href="https://support.claude.com/en/articles/12512198-how-to-create-custom-skills">Claude 說明中心：怎麼建立自己的 Skill</a></li>
+  <li><a href="https://claude.com/docs/skills/overview">Claude 文件：Skills 總覽（這一頁只列出付費方案）</a></li>
+  <li><a href="https://claude.com/pricing">Claude：方案與價格（比較表的 Skills 一列，Free 是 Yes）</a></li>
+  <li><a href="https://github.com/anthropics/skills">GitHub：Anthropic 官方的 Skills 範例庫</a></li>
+</ul>
+<div class="note warn"><b>官方兩個頁面的說法不一樣</b><br>說明中心和價格頁都寫免費方案可以用 Skills，Claude 文件的 Skills 總覽那一頁卻只列出付費方案。這一課的步驟免費版都做得到。你的帳號如果找不到 Skills，請以官方網站當時的說明為準。</div>
+<p class="src">資料更新日期：2026 年 11 月 14 日，畫面上的用字是繁體中文介面當天的樣子。AI 工具更新很快，功能和價格請以官方網站為準。</p>
+
+<footer><a href="../">首頁</a><a href="../privacy.html">隱私權政策</a><span>© 2026 知識共享</span></footer>
+</div>
+<script>
+(function(){
+  document.querySelectorAll('.prompt button').forEach(function(b){b.onclick=function(){
+    var t=b.parentNode.firstChild.textContent.trim();
+    (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){b.textContent='已複製';setTimeout(function(){b.textContent='複製'},1500)},function(){});
+  }});
+})();
+</script>
+</body></html>
