@@ -1,0 +1,168 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="../apple-touch-icon.png"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Day 4：Claude Code，請 Claude 直接進你的電腦｜知識共享</title>
+<meta name="description" content="Claude Code 跟聊天版的 Claude 哪裡不一樣、怎麼打開、第一次該怎麼用、要不要付費。用 40 張發票示範改檔名、分資料夾、做總表，附示範檔案、Mac 和 Windows 的安裝步驟。">
+<link rel="stylesheet" href="../style.css">
+<style>
+.files{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:18px 0}
+.files a{display:flex;gap:12px;align-items:center;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:inherit;text-decoration:none;transition:transform .15s,border-color .15s}
+.files a:hover{transform:translateY(-2px);border-color:var(--accent)}
+.files i{flex:none;font-style:normal;font-weight:800;font-size:12px;padding:6px 8px;border-radius:8px;color:#fff;background:#1d8a4e}
+.files i.c{background:#4b6cb7}.files i.t{background:#7a6a55}
+.files small{display:block;color:var(--muted);font-size:13px}
+.prompt{position:relative;margin:14px 0;padding:14px 18px;border-radius:12px;background:var(--card);border:1px dashed var(--line);font-size:16px;line-height:1.7;overflow-wrap:anywhere}
+.prompt::before{content:"你可以這樣問";display:block;font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--accent);margin-bottom:4px}
+.prompt.pre{white-space:pre-line}
+.prompt button{position:absolute;top:10px;right:10px;font:inherit;font-size:12px;line-height:1.7;white-space:nowrap;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.prompt button:hover{border-color:var(--accent);color:var(--accent)}
+.three{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:18px 0}
+.three div{padding:16px 18px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
+.three div.on{border-color:var(--accent);box-shadow:0 8px 30px rgba(0,0,0,.12)}
+.three b{display:block;margin-bottom:2px}
+.three span{color:var(--muted);font-size:14px}
+</style></head><body><div class="wrap lesson">
+<header><a class="logo" href="../" style="color:inherit;text-decoration:none"><picture><source srcset="../mark-dark.svg" media="(prefers-color-scheme: dark)"><img class="mark" src="../mark.svg" alt=""></picture>知識共享 ShareKnowledge</a></header>
+<div class="crumb"><a href="../">首頁</a> / 課程</div>
+<span class="tag">Day 4</span>
+<h1>Claude Code：請 Claude 直接進你的電腦</h1>
+<p class="lead">報稅前一個星期，水電師傅的太太阿芬打開發票的資料夾，兩百四十張，全是手機拍的。每一張都要打開、看金額、改檔名、搬資料夾。聊天版的 Claude 看得懂發票，可是碰不到她電腦裡的檔案。今天換 Claude Code 登場，它直接進到這個資料夾，自己動手。先說清楚：今天第一次要用到付費版。先不用馬上付錢，看完這一課，你就知道自己需不需要。不會的，就問 Claude。</p>
+
+<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/TBUFlZJUdxw?list=PLaAuH9dstA6Q" title="Day 4｜Claude Code" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<p class="src">看不到影片？<a href="https://www.youtube.com/watch?v=TBUFlZJUdxw&amp;list=PLaAuH9dstA6Q">到 YouTube 觀看</a>。每一段的一分鐘短片在 <a href="https://www.youtube.com/playlist?list=PLLv0kZ0Yf5bI">AI 實戰短片播放清單</a>。</p>
+
+<h2>先下載示範檔案</h2>
+<p>影片裡示範用的是 40 張發票和收據，有手機拍的照片，也有 PDF。店名、統一編號、發票號碼全部是虛構的。裡面故意放了幾張容易出錯的：反光看不清金額的、同一張拍了兩次的、一張照片拍到兩張發票的、手寫的收據。</p>
+<div class="files">
+  <a href="files/day04/invoices40.zip" download="發票_示範40張.zip"><i class="c">ZIP</i><span>示範用的 40 張發票<small>C｜解壓縮之後，會有一個「發票」資料夾</small></span></a>
+</div>
+
+<h2>A｜它跟聊天版哪裡不一樣</h2>
+<div class="three">
+  <div><b>聊天版</b><span>你問它答。檔案要你一個一個傳上去，做好的東西要你自己下載、自己改檔名。</span></div>
+  <div class="on"><b>Claude Code</b><span>待在你指定的資料夾裡，自己開檔案、改檔案、跑程式，一次做完很多步。</span></div>
+  <div><b>同一個 Claude</b><span>頭腦一樣，只是多了一雙手。</span></div>
+</div>
+<div class="note warn"><b>Claude Code 要付費方案才能用</b><br>它要 Pro 以上的方案，每月 20 美元起（一次付一年是 200 美元）。免費方案不包含 Claude Code，官方也沒有試用。價格請以 <a href="https://claude.com/pricing">claude.com/pricing</a> 當時的頁面為準。需不需要付這筆錢，請先看完 D 段。</div>
+
+<h2>B｜打開它，做第一件事</h2>
+<p>Claude Code 有兩個入口，裡面是同一個 Claude。第一次用，建議從電腦版 App 開始。</p>
+<h3>入口一：電腦版 App 的 Code 分頁</h3>
+<ol>
+  <li>打開 Day 0 裝好的 Claude 電腦版，登入付費的帳號，點最上面的 <b>Code</b>。你不用另外安裝任何東西。</li>
+  <li>輸入框下面有一排選項，點 <b>選擇資料夾</b>，選你要交給它的那一個資料夾。</li>
+  <li>它會問 <b>要信任此工作區嗎？</b> 按 <b>信任工作區</b>。之後它只會讀寫這一個資料夾。</li>
+  <li>同一排的最右邊是權限選單，有 <b>自動</b>、<b>手動</b>、<b>接受編輯</b>、<b>規劃</b> 四個。新手先停在 <b>手動</b>，它要變更任何東西之前，一律先問你。</li>
+  <li>第一句話，先叫它只看不動手：</li>
+</ol>
+<div class="prompt">看一下這個資料夾，先不要動任何檔案，告訴我裡面有什麼。<button>複製</button></div>
+<p>實測時它回報資料夾裡有 40 個檔案，4 個 PDF、36 張圖片，最後說「我會等你說了再動手」。</p>
+<div class="note"><b>資料夾放在「文件」裡，Mac 會多問一次</b><br>如果你選的資料夾在「文件」「桌面」或「下載項目」裡，macOS 會跳出一個系統視窗，問要不要讓 Claude 存取那個位置。要不要允許由你決定。不想開的話，把要整理的資料夾搬到別的地方再選。</div>
+
+<h3>入口二：終端機</h3>
+<p>終端機是一個只能打字的視窗。它看起來像電影裡駭客用的畫面，其實沒有想像中困難，只是另一種呈現的介面：App 用滑鼠點，終端機用打字，做的事一樣。兩個系統的步驟不太一樣，選你的電腦：</p>
+<div class="tabs" role="tablist">
+  <button role="tab" data-os="mac" aria-selected="true"> macOS</button>
+  <button role="tab" data-os="win" aria-selected="false">⊞ Windows</button>
+</div>
+<div class="osp" data-os="mac">
+  <h3>macOS</h3>
+  <ol>
+    <li>按 <b>Command + 空白鍵</b>，輸入「終端機」（或 Terminal），按 Enter。</li>
+    <li>貼上這一行，按 Enter，等它跑完：<br><code>curl -fsSL https://claude.ai/install.sh | bash</code></li>
+    <li>輸入 <code>claude</code>，按 Enter。第一次會打開瀏覽器請你登入。</li>
+    <li>如果出現 <code>command not found: claude</code>，把整段訊息截圖，丟給聊天版的 Claude，請它告訴你怎麼修。</li>
+  </ol>
+  <p>系統需求：macOS 13 以上，記憶體 4 GB 以上。</p>
+</div>
+<div class="osp" data-os="win">
+  <h3>Windows</h3>
+  <ol>
+    <li>按 <b>Windows 鍵 + X</b>，選「終端機」或「Windows PowerShell」。</li>
+    <li>貼上這一行，按 Enter，等它跑完：<br><code>irm https://claude.ai/install.ps1 | iex</code></li>
+    <li>輸入 <code>claude</code>，按 Enter。第一次會打開瀏覽器請你登入。</li>
+    <li>如果出現 <code>'claude' is not recognized</code>，把整段訊息截圖，丟給聊天版的 Claude，請它告訴你怎麼修。</li>
+  </ol>
+  <p>系統需求：Windows 10（1809）以上，記憶體 4 GB 以上。官方建議另外安裝 <a href="https://git-scm.com/downloads/win">Git for Windows</a>，沒有裝也能用。</p>
+</div>
+<p>要讓它進到某一個資料夾，先輸入 <code>cd</code> 加一個空格，把資料夾拖進終端機的視窗，按 Enter，再輸入 <code>claude</code>。</p>
+
+<h2>C｜實戰：整理一整個資料夾的發票</h2>
+<h3>動手之前，先做兩件事</h3>
+<ul>
+  <li><b>把資料夾複製一份。</b>萬一弄亂了，原本的都在。</li>
+  <li><b>先拿一小批試。</b>影片裡先拿 40 張，試順了再做全部。</li>
+</ul>
+<h3>步驟</h3>
+<ol>
+  <li>把權限選單切到 <b>規劃</b>。這個模式下，它只會先給你一份計畫，不會動手。</li>
+  <li>把要求一次講清楚：</li>
+</ol>
+<div class="prompt pre">這些是我們 9 月和 10 月的進貨發票和收據。請幫我整理：每個檔案改名成「日期_廠商_金額」，按月份分到「9月」「10月」兩個資料夾，再做一張 Excel 總表給記帳士（日期、廠商、賣方統編、發票號碼、金額、檔名）。金額或日期看不清楚的不要猜，同一張拍了兩次的不要算兩次，這些另外列在「請你確認.txt」。<button>複製</button></div>
+<ol start="3">
+  <li>它會先抽幾張來看，然後交出一份計畫，畫面右邊會開出「計畫」面板。不滿意就按 <b>修訂…</b>，用講的請它改；滿意了才按 <b>接受</b>。</li>
+  <li>它開始讀每一張發票。讀完會先回報有問題的檔案，並且停下來問你要不要照這份對照表動手。到這一步，一個檔案都還沒有被動過。</li>
+  <li>你說可以，它才開始改名、分資料夾、做總表。</li>
+</ol>
+<h3>實測的結果</h3>
+<table class="plans">
+<tr><th>項目</th><th>結果</th></tr>
+<tr><td>改好檔名、分好資料夾</td><td>35 個檔案。「9月」20 個，「10月」15 個</td></tr>
+<tr><td>發票總表.xlsx</td><td>35 列，欄位是日期、廠商、賣方統編、發票號碼、金額、檔名</td></tr>
+<tr><td>留在原地等你確認</td><td>5 個檔案：金額反光看不清的 2 張、同一張拍了兩次的 2 張、一張照片拍到兩張發票的 1 張</td></tr>
+<tr><td>它自己多做的事</td><td>動手前先記下每個檔案的指紋，做完再比對，確認檔案只是改名搬移、內容沒有變</td></tr>
+</table>
+<div class="note"><b>檔案很多的時候，分批做</b><br>讀圖片很吃用量。兩百多張一次做，很可能碰到方案的用量上限，要等幾個小時才能繼續。比較穩的做法是一次做一個月的量，做完一批再做下一批。</div>
+
+<h2>D｜你需要它嗎？</h2>
+<div class="three">
+  <div><b>免費版就夠</b><span>平常只是問問題、寫文字、整理一兩個檔案。Day 0 到 Day 3 的做法都不用付錢。</span></div>
+  <div class="on"><b>可以考慮付費</b><span>檔案很多、步驟很多、每個月都要做一次，像今天的發票。</span></div>
+  <div><b>想做出工具</b><span>後面幾課會做能上線的小工具，那也會用到它。</span></div>
+</div>
+<p>拿不定主意，可以先問聊天版的 Claude：</p>
+<div class="prompt">我每個月都要……，檔案大概有……個。這件事用 Claude Code 做得到嗎？需要付費方案嗎？<button>複製</button></div>
+<h3>讓它動手，守住三件事</h3>
+<ul>
+  <li><b>先備份。</b>動手之前，把資料夾複製一份。</li>
+  <li><b>只給它一個資料夾。</b>不要把整台電腦交給它。</li>
+  <li><b>它問你的時候，看清楚再按。</b>看不懂它在問什麼，就請它用白話再講一次。</li>
+</ul>
+<h3>App 裡的另一個選項：Cowork</h3>
+<p>你在 App 裡會看到另一個選項叫 Cowork。它同樣是付費方案的功能，也能讀寫你電腦裡的資料夾。簡單分：Cowork 適合把一件事交辦出去，Claude Code 適合做出工具。這門課後面用的是 Claude Code。</p>
+
+<h2>今天的作業</h2>
+<ul>
+  <li>沒有付費的人：想一件檔案很多、每個月都要做的事，問聊天版的 Claude「這件事用 Claude Code 做得到嗎？」</li>
+  <li>有付費的人：複製一個資料夾，打開 Code 分頁，先叫它只看不動手。</li>
+  <li>過程中卡住了，就截圖問 Claude。</li>
+</ul>
+<p>下一課：Day 5，常用的指令，和看懂它的回報。之前預告過的「錄音檔變成文字」和「把 Skill 搬過來用」，會放在後面的課。</p>
+
+<h2>官方來源</h2>
+<ul class="src">
+  <li><a href="https://code.claude.com/docs/en/setup">Claude Code 文件：安裝與系統需求（寫明免費方案不包含 Claude Code）</a></li>
+  <li><a href="https://code.claude.com/docs/en/terminal-guide">Claude Code 文件：給新手的終端機指南</a></li>
+  <li><a href="https://code.claude.com/docs/en/desktop">Claude Code 文件：電腦版 App</a></li>
+  <li><a href="https://support.claude.com/en/articles/14554922-claude-code-user-faq">Claude 說明中心：Claude Code 常見問題</a></li>
+  <li><a href="https://support.claude.com/en/articles/13345190-getting-started-with-cowork">Claude 說明中心：Cowork 入門</a></li>
+  <li><a href="https://claude.com/pricing">Claude：方案與價格</a></li>
+</ul>
+<p class="src">資料更新日期：2026 年 11 月 15 日。App 的畫面是當天用付費帳號、繁體中文介面實際操作的樣子。AI 工具更新很快，功能和價格請以官方網站為準。</p>
+
+<footer><a href="../">首頁</a><a href="../privacy.html">隱私權政策</a><span>© 2026 知識共享</span></footer>
+</div>
+<script>
+(function(){
+  document.querySelectorAll('.prompt button').forEach(function(b){b.onclick=function(){
+    var t=b.parentNode.firstChild.textContent.trim();
+    (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){b.textContent='已複製';setTimeout(function(){b.textContent='複製'},1500)},function(){});
+  }});
+  var saved; try{saved=localStorage.getItem('os')}catch(e){}
+  var os = saved || (/Win/i.test(navigator.platform||navigator.userAgent)?'win':'mac');
+  function set(o){os=o;try{localStorage.setItem('os',o)}catch(e){}
+    document.querySelectorAll('.tabs button').forEach(function(b){b.setAttribute('aria-selected',b.dataset.os===o)});
+    document.querySelectorAll('.osp').forEach(function(p){p.classList.toggle('on',p.dataset.os===o)});}
+  document.querySelectorAll('.tabs button').forEach(function(b){b.onclick=function(){set(b.dataset.os)}});
+  set(os);
+})();
+</script>
+</body></html>
