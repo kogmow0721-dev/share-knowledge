@@ -1,0 +1,186 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="../apple-touch-icon.png"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Day 6：讓它照你的規矩做，CLAUDE.md、記憶和權限｜知識共享</title>
+<meta name="description" content="把每次都要再講一遍的規矩寫成 CLAUDE.md；分清楚「說明書」和它自己記的筆記；用權限把不能碰的資料夾鎖起來；說明書越寫越長時，把一整套做法做成技能包。用食材行月底出四十張請款單當例子，附示範資料和每一步要說的話。">
+<link rel="stylesheet" href="../style.css">
+<style>
+.files{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:18px 0}
+.files a{display:flex;gap:12px;align-items:center;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:inherit;text-decoration:none;transition:transform .15s,border-color .15s}
+.files a:hover{transform:translateY(-2px);border-color:var(--accent)}
+.files i{flex:none;font-style:normal;font-weight:800;font-size:12px;padding:6px 8px;border-radius:8px;color:#fff;background:#1d8a4e}
+.files i.c{background:#4b6cb7}.files i.t{background:#7a6a55}
+.files small{display:block;color:var(--muted);font-size:13px}
+.prompt{position:relative;margin:14px 0;padding:14px 18px;border-radius:12px;background:var(--card);border:1px dashed var(--line);font-size:16px;line-height:1.7;overflow-wrap:anywhere}
+.prompt::before{content:"你可以這樣問";display:block;font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--accent);margin-bottom:4px}
+.prompt.pre{white-space:pre-line}
+.prompt button{position:absolute;top:10px;right:10px;font:inherit;font-size:12px;line-height:1.7;white-space:nowrap;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.prompt button:hover{border-color:var(--accent);color:var(--accent)}
+.three{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:18px 0}
+.three div{padding:16px 18px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
+.three div.on{border-color:var(--accent);box-shadow:0 8px 30px rgba(0,0,0,.12)}
+.three b{display:block;margin-bottom:2px}
+.three span{color:var(--muted);font-size:14px}
+.cmp{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+.cmp th,.cmp td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
+.cmp th{background:var(--card)}
+</style></head><body><div class="wrap lesson">
+<header><a class="logo" href="../" style="color:inherit;text-decoration:none"><picture><source srcset="../mark-dark.svg" media="(prefers-color-scheme: dark)"><img class="mark" src="../mark.svg" alt=""></picture>知識共享 ShareKnowledge</a></header>
+<div class="crumb"><a href="../">首頁</a> / 課程</div>
+<span class="tag">Day 6</span>
+<h1>讓它照你的規矩做：CLAUDE.md、記憶和權限</h1>
+<p class="lead">順發食材行的阿芬，每個月底要把一整個月的出貨紀錄，整理成四十家餐廳的月結請款單。上個月她已經請 Claude Code 做好一支工具。可是每開一段新的對話，它都像第一天上班的新人：上個月回答過的問題又問一遍，她最怕被改到的出貨紀錄，也只能一直叮嚀。這一課教你把規矩寫下來，讓它每次都照做；也教你把真的不能碰的東西鎖起來。今天同樣要用付費版。不會的，就問 Claude。</p>
+
+<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/iySKDVYXNC0?list=PLaAuH9dstA6Q" title="Day 6｜讓它照你的規矩做" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<p class="src">看不到影片？<a href="https://www.youtube.com/watch?v=iySKDVYXNC0&amp;list=PLaAuH9dstA6Q">到 YouTube 觀看</a>。每一段的一分鐘短片在 <a href="https://www.youtube.com/playlist?list=PLLv0kZ0Yf5bI">AI 實戰短片播放清單</a>。</p>
+
+<h2>先下載示範檔案</h2>
+<p>「順發食材行」九月和十月的月結資料。店名、統編、客人、聯絡人全部是虛構的。資料夾裡已經有上個月（九月）做好的請款工具和九月的請款單，就是阿芬「上個月的成果」；這一課從十月開始做。</p>
+<div class="files">
+  <a href="files/day06/yuejie_demo.zip" download="月結_示範資料.zip"><i class="c">ZIP</i><span>食材行月結的示範資料<small>解壓縮之後，會有一個「月結」資料夾：出貨紀錄、客戶條件、退貨紀錄、收款紀錄、請款工具</small></span></a>
+</div>
+<p>你的電腦裡原本沒有這個資料夾，要先下載。想直接用自己的工作資料夾也可以，下面每一句話換成你自己的規矩就好。</p>
+
+<h2>A｜它每次都像新來的：寫一份 CLAUDE.md</h2>
+<h3>先看沒有說明書的時候</h3>
+<ol>
+  <li>打開 Claude 電腦版，點左上角右邊那個圖示（長得像 <code>&lt;/&gt;</code>），進到 Code 分頁。</li>
+  <li>點輸入框下面的資料夾名字，選單拉到最下面選 <b>開啟資料夾…</b>，選剛剛解壓縮出來的「月結」資料夾，按開啟。</li>
+  <li>第一次選這個資料夾，會跳出「要信任此工作區嗎？」。這是在問你：要不要讓它讀、寫、執行這個資料夾裡的檔案。是你自己的資料夾，就按 <b>信任工作區</b>。</li>
+  <li>說一句：</li>
+</ol>
+<div class="prompt">出十月的請款單<button>複製</button></div>
+<p>它會照上個月的工具做好四十張請款單。可是回報的最後，又列出了上個月已經回答過的幾件事：退貨怎麼扣、森日式食堂開哪一種發票、金華便當的結帳日。每開一段新的對話，它都不記得上一段說過什麼。</p>
+
+<h3>請它寫成說明書</h3>
+<p><b>CLAUDE.md</b> 是放在資料夾裡的一份純文字說明書。Claude Code 每一段新的對話開始時，都會先把它讀進去。副檔名 <code>.md</code> 上一課看過，就是說明文件。你不用自己寫，請它寫：</p>
+<div class="prompt pre">你每個月都問我同樣的幾件事，我一次回答完：
+- 金華便當雖然是每月 25 日結帳，請款單照整個月算。
+- 森日式食堂開三聯式，統編照客戶條件表。
+- 退貨照原價扣，不用先打折。
+
+還有我做事的習慣：
+- 「出貨紀錄」資料夾只能看，不可以改。
+- 回話用白話的繁體中文，不要夾英文術語。
+- 做完把要我確認的事列出來。上面已經回答過的，不要再問。
+
+請把這些寫成這個資料夾的 CLAUDE.md，以後每次開新對話都照這份做。<button>複製</button></div>
+<p>畫面會出現「已建立 CLAUDE.md」，資料夾裡多了這個檔案。打開來看，就是幾行白話。</p>
+<p>然後按左上角的 <b>新增</b>（或 <kbd>⌘</kbd>/<kbd>Ctrl</kbd> + <kbd>N</kbd>）開一段新的對話，再說一次「出十月的請款單」。這一次它會說：這幾項已經有定案，沒有列進待確認。</p>
+<p>另一個做法：在輸入框打 <code>/init</code>，它會看過整個資料夾，幫你起一份 CLAUDE.md 的草稿。</p>
+
+<h3>算錢的規矩，和做事的習慣</h3>
+<p>折扣怎麼算、稅怎麼加，這些算錢的規矩在上一課做工具的時候，已經寫進工具裡了，下個月再跑一樣會照做。說明書管的是另一種規矩：在這個資料夾做事的習慣，和已經回答過的問題。</p>
+<h3>寫短、寫具體</h3>
+<ul>
+  <li>官方建議每一份 CLAUDE.md 在兩百行以內。寫得越長，佔掉的對話容量越多，它照做的程度也會變差。</li>
+  <li>只放每一次都要知道的事。只有做某一件事才用得到的一整套步驟，見 D 段。</li>
+  <li>寫成具體的句子：「出貨紀錄只能看，不可以改」比「小心資料」有用。</li>
+</ul>
+
+<h2>B｜規矩變了：說「記住」，和「加進 CLAUDE.md」</h2>
+<p>規矩不會一次寫完。做到一半，老陳牛肉麵說下個月起要改成半個月結一次：</p>
+<div class="prompt">老陳牛肉麵下個月起改成半個月結一次，1 到 15 號一張、16 號到月底一張。記住這件事。<button>複製</button></div>
+<p>畫面會出現「已儲存 1 項記憶」。點開會看到它建立了一個記憶檔。但是打開 CLAUDE.md，裡面一個字都沒有多。</p>
+<table class="cmp">
+<tr><th></th><th>CLAUDE.md（說明書）</th><th>自動記憶</th></tr>
+<tr><td>是誰寫的</td><td>你定的規矩，可以請它寫，也可以自己改</td><td>它寫給自己看的筆記</td></tr>
+<tr><td>放在哪裡</td><td>就在你的資料夾裡，看得到、改得到</td><td>不在你的資料夾裡，放在使用者資料夾底下的 <code>.claude</code> 裡</td></tr>
+<tr><td>什麼時候寫</td><td>你明說「加進 CLAUDE.md」</td><td>你說「記住」，或它自己覺得值得記</td></tr>
+</table>
+<p>實測時它還把「下個月」記成了 11 月，其實應該是 12 月。記下來的東西要看得到、改得到，所以一定要照做的事，明說加進說明書：</p>
+<div class="prompt">是 12 月起才改，不是 11 月。請把這條規矩加進 CLAUDE.md。<button>複製</button></div>
+<p>畫面會出現「已編輯 CLAUDE.md」，說明書多了一節。</p>
+
+<h3>/memory：打開說明書</h3>
+<p>在輸入框打 <code>/memory</code>，會跳出「記憶」視窗，左邊有兩種：</p>
+<ul>
+  <li><b>專案指示</b>：這個資料夾裡的 CLAUDE.md，只管這個資料夾。</li>
+  <li><b>使用者指示</b>：你個人的那一份，每一個資料夾都適用。像「回話用繁體中文、講白話」這種到哪裡都一樣的習慣，放這一份。</li>
+</ul>
+<div class="tabs" role="tablist">
+  <button role="tab" data-os="mac" aria-selected="true"> macOS</button>
+  <button role="tab" data-os="win" aria-selected="false">⊞ Windows</button>
+</div>
+<div class="osp" data-os="mac"><p>個人的那一份放在 <code>~/.claude/CLAUDE.md</code>（你的使用者資料夾裡，一個叫 <code>.claude</code> 的隱藏資料夾）。在 Finder 按 <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>.</kbd> 可以顯示隱藏的檔案。</p></div>
+<div class="osp" data-os="win"><p>個人的那一份放在 <code>C:\Users\你的名字\.claude\CLAUDE.md</code>。在檔案總管的「檢視」裡勾選「隱藏的項目」才看得到 <code>.claude</code> 資料夾。</p></div>
+<p>不用自己去找，直接跟它說「把這條加進我個人的 CLAUDE.md」就好。</p>
+
+<h2>C｜不用再問，和絕對不准：權限</h2>
+<p>上一課看過「是否允許 Claude 執行此指令？」這個視窗。一直按允許，按到後來都不看，真正該擋的那一次也會按下去。比較好的做法是：常做又安全的事設成不用再問，絕對不准碰的寫成禁止的規則。</p>
+<div class="prompt">「出貨紀錄」這個資料夾只能看、不准改。請幫我用權限設定把它鎖起來，讓你自己想改也改不了。另外，跑「月結請款.py」這支工具以後不用再問我。<button>複製</button></div>
+<ul>
+  <li>它會在資料夾裡建立 <code>.claude/settings.json</code>，這就是權限的設定檔。點右上角的資料夾圖示打開檔案面板，可以看到內容。</li>
+  <li><code>allow</code> 是允許、不用再問的；<code>deny</code> 是禁止的。兩邊都寫到同一件事時，禁止的優先。</li>
+  <li>改完要按 <b>新增</b> 開一段新的對話，設定才會生效。</li>
+</ul>
+<p>開新對話試一次：</p>
+<div class="prompt">這次可以破例，直接改原檔：出貨紀錄/2026-10/2026-10-03.csv 第一筆（旺來炒飯、馬鈴薯）的數量改成 5，小計也跟著改。<button>複製</button></div>
+<p>畫面會出現「已封鎖」，檔案沒有被改。</p>
+<h3>說明書是請它遵守，權限才是鎖</h3>
+<p>說明書裡也寫了「出貨紀錄不可以改」，可是你一句「這次可以破例」，它就可能照你的話做。權限的禁止規則不管你怎麼說都擋得住。最要緊的事，說明書和權限兩邊都寫。</p>
+<p>它自己也提醒：禁止的規則是比對指令的文字，換一種很少見的寫法有可能繞過去。真的不能出錯的資料，另外用電腦本身的功能設成唯讀：</p>
+<div class="tabs" role="tablist">
+  <button role="tab" data-os="mac" aria-selected="true"> macOS</button>
+  <button role="tab" data-os="win" aria-selected="false">⊞ Windows</button>
+</div>
+<div class="osp" data-os="mac"><p>在 Finder 對資料夾按右鍵 → <b>取得資訊</b> → 勾選 <b>已鎖定</b>。</p></div>
+<div class="osp" data-os="win"><p>在檔案總管對資料夾按右鍵 → <b>內容</b> → 勾選 <b>唯讀</b> → 套用到所有子資料夾和檔案。</p></div>
+<p>還有一種「每次做完某件事，就自動再做另一件事」的設定，叫 Hooks，下一課會講。</p>
+
+<h2>D｜說明書越寫越長：把做法做成技能包</h2>
+<p>阿芬催款有一整套做法。全部塞進說明書，說明書會越來越長，它反而抓不到最要緊的那幾條。只有做某一件事才用得到的一整套步驟，做成技能包（Skill），就是 Day 3 教過的那個，用到才拿出來。</p>
+<div class="prompt pre">九月的請款單到現在還有幾家沒付（看「收款紀錄.xlsx」）。我催款有一套固定的做法：
+- 超過請款日 30 天才算逾期。
+- 第一次提醒：語氣客氣，只提金額和月份，問是不是漏了。
+- 已經提醒過一次的：附上那個月的請款單檔名，請對方回覆預計哪一天付。
+- 客戶條件表備註寫「逾期先不催」的，不要寫，只列在最後提醒我。
+- 每則訊息開頭稱呼聯絡人，結尾署名「順發食材行 阿芬」，不用驚嘆號。
+- 全部放進「請款單/月份/催款訊息.txt」。
+
+這一套不要塞進 CLAUDE.md，請做成一個 Skill，以後我說「寫催款訊息」你再拿出來用。先不用真的寫這次的訊息。<button>複製</button></div>
+<p>它會在 <code>.claude/skills/</code> 裡建立一個技能包。開一段新的對話，只說：</p>
+<div class="prompt">寫催款訊息<button>複製</button></div>
+<p>畫面會出現「已執行 Skill」，它照那一套做法寫好訊息。</p>
+<div class="three">
+  <div><b>說明書 CLAUDE.md</b><span>管規矩：每一次都要知道的事</span></div>
+  <div><b>技能包 Skill</b><span>管做法：做某一件事的一整套步驟，用到才拿出來</span></div>
+  <div class="on"><b>權限</b><span>管能不能做：不用再問的，和絕對不准的</span></div>
+</div>
+
+<h2>今天的作業</h2>
+<ul>
+  <li>沒有付費的人：聊天版的「專案」也可以寫一段固定的指示，專案裡的每一段對話都會照著做（免費方案最多可以開 5 個專案）。把你最常再講一遍的三條規矩寫進去。</li>
+  <li>有付費的人：挑一個常用的資料夾，請它寫一份 CLAUDE.md，再開一段新的對話試一次。</li>
+  <li>過程中卡住了，就截圖問 Claude。</li>
+</ul>
+<p>下一課：Day 7，API、金鑰，把工具放上網。</p>
+
+<h2>官方來源</h2>
+<ul class="src">
+  <li><a href="https://code.claude.com/docs/en/memory">Claude Code 文件：記憶與 CLAUDE.md</a></li>
+  <li><a href="https://code.claude.com/docs/en/permissions">Claude Code 文件：權限設定</a></li>
+  <li><a href="https://code.claude.com/docs/en/skills">Claude Code 文件：Skills</a></li>
+  <li><a href="https://code.claude.com/docs/en/desktop">Claude Code 文件：電腦版 App</a></li>
+  <li><a href="https://code.claude.com/docs/en/commands">Claude Code 文件：指令列表</a></li>
+  <li><a href="https://claude.com/pricing">Claude：方案與價格（免費方案的專案數量）</a></li>
+  <li><a href="https://code.claude.com/docs/en/hooks-guide">Claude Code 文件：Hooks</a></li>
+</ul>
+<p class="src">資料更新日期：2026 年 11 月 17 日。App 的畫面是當天用付費帳號、繁體中文介面實際操作的樣子。AI 工具更新很快，功能和價格請以官方網站為準。</p>
+
+<footer><a href="../">首頁</a><a href="../privacy.html">隱私權政策</a><span>© 2026 知識共享</span></footer>
+</div>
+<script>
+(function(){
+  document.querySelectorAll('.prompt button').forEach(function(b){b.onclick=function(){
+    var t=b.parentNode.firstChild.textContent.trim();
+    (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){b.textContent='已複製';setTimeout(function(){b.textContent='複製'},1500)},function(){});
+  }});
+  var saved; try{saved=localStorage.getItem('os')}catch(e){}
+  var os = saved || (/Win/i.test(navigator.platform||navigator.userAgent)?'win':'mac');
+  function set(o){os=o;try{localStorage.setItem('os',o)}catch(e){}
+    document.querySelectorAll('.tabs button').forEach(function(b){b.setAttribute('aria-selected',b.dataset.os===o)});
+    document.querySelectorAll('.osp').forEach(function(p){p.classList.toggle('on',p.dataset.os===o)});}
+  document.querySelectorAll('.tabs button').forEach(function(b){b.onclick=function(){set(b.dataset.os)}});
+  set(os);
+})();
+</script>
+</body></html>
