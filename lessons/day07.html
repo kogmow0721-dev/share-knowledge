@@ -1,0 +1,218 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="../apple-touch-icon.png"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Day 7：金鑰、GitHub，把工具放上網｜知識共享</title>
+<meta name="description" content="跟氣象署申請授權碼、把金鑰收進 .env；用私人倉庫和 .gitignore 把資料夾存上 GitHub；用 GitHub Pages 變成客人打得開的網址；再設一個 Hook，推上去之前自動擋下金鑰和手機號碼。用山上營區的週末空位網頁當例子，附示範資料和每一步要說的話。">
+<link rel="stylesheet" href="../style.css">
+<style>
+.files{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:18px 0}
+.files a{display:flex;gap:12px;align-items:center;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:inherit;text-decoration:none;transition:transform .15s,border-color .15s}
+.files a:hover{transform:translateY(-2px);border-color:var(--accent)}
+.files i{flex:none;font-style:normal;font-weight:800;font-size:12px;padding:6px 8px;border-radius:8px;color:#fff;background:#1d8a4e}
+.files i.c{background:#4b6cb7}.files i.t{background:#7a6a55}
+.files small{display:block;color:var(--muted);font-size:13px}
+.prompt{position:relative;margin:14px 0;padding:14px 18px;border-radius:12px;background:var(--card);border:1px dashed var(--line);font-size:16px;line-height:1.7;overflow-wrap:anywhere}
+.prompt::before{content:"你可以這樣問";display:block;font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--accent);margin-bottom:4px}
+.prompt.pre{white-space:pre-line}
+.prompt button{position:absolute;top:10px;right:10px;font:inherit;font-size:12px;line-height:1.7;white-space:nowrap;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.prompt button:hover{border-color:var(--accent);color:var(--accent)}
+.three{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:18px 0}
+.three div{padding:16px 18px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
+.three div.on{border-color:var(--accent);box-shadow:0 8px 30px rgba(0,0,0,.12)}
+.three b{display:block;margin-bottom:2px}
+.three span{color:var(--muted);font-size:14px}
+.shot{margin:18px 0 22px}
+.shot img{display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--line);box-shadow:0 10px 32px rgba(0,0,0,.16);background:#fff}
+.shot.narrow img{max-width:560px;margin:0 auto}
+.shot figcaption{margin-top:8px;font-size:14px;color:var(--muted);text-align:center}
+.lesson ol.steps{counter-reset:s;list-style:none;padding-left:0}
+.lesson ol.steps>li{counter-increment:s;position:relative;padding-left:40px;margin:12px 0}
+.lesson ol.steps>li::before{content:counter(s);position:absolute;left:0;top:2px;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:800;color:#1a1205;background:var(--accent)}
+</style></head><body><div class="wrap lesson">
+<header><a class="logo" href="../" style="color:inherit;text-decoration:none"><picture><source srcset="../mark-dark.svg" media="(prefers-color-scheme: dark)"><img class="mark" src="../mark.svg" alt=""></picture>知識共享 ShareKnowledge</a></header>
+<div class="crumb"><a href="../">首頁</a> / 課程</div>
+<span class="tag">Day 7</span>
+<h1>金鑰、GitHub，把工具放上網</h1>
+<p class="lead">苗栗山上的山嵐營區，老闆娘阿滿的手機一整天都在跳訊息：「週六還有位子嗎？」「那天會不會下雨？」她每回一次，就要打開訂位表算一次，再去查山上的天氣，截圖傳出去，過一陣子內容又不準了。這一課做一頁給客人看的網頁，列出週末還剩幾帳，放上氣象署的天氣預報，最後變成客人用手機就打得開的網址。路上會碰到四個新東西：金鑰、GitHub、上線和 Hook。今天同樣要用付費版的 Claude Code。不會的，就問 Claude。</p>
+
+<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/-Ixo-Sb28sQ?list=PLaAuH9dstA6Q" title="Day 7｜金鑰、GitHub，把工具放上網" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<p class="src">看不到影片？<a href="https://www.youtube.com/watch?v=-Ixo-Sb28sQ&amp;list=PLaAuH9dstA6Q">到 YouTube 觀看</a>。每一段的一分鐘短片在 <a href="https://www.youtube.com/playlist?list=PLLv0kZ0Yf5bI">AI 實戰短片播放清單</a>。</p>
+
+<h2>先下載示範檔案</h2>
+<p>「山嵐營區」的營位表和訂位表。營區、客人的名字和電話全部是假的。營位表列了草地、雨棚、棧板、車泊四區，一共 32 個營位；訂位表有三百多筆訂位，從 2026 年 11 月 20 日排到 12 月底。</p>
+<div class="files">
+  <a href="files/day07/shanlan_demo.zip" download="山嵐營區_示範資料.zip"><i class="c">ZIP</i><span>營區訂位的示範資料<small>解壓縮之後，會有一個「山嵐營區」資料夾：營位表.xlsx、訂位表.xlsx</small></span></a>
+</div>
+<p>訂位是從 11 月 20 日那個週末開始排的。比較晚才做這一課的話，跟它說「把 11 月 20 日當成這個週末」就好。想直接用自己店裡的資料也可以，下面每一句話換成你自己的店就好。</p>
+
+<h2>A｜天氣要跟氣象署拿：API、金鑰和 .env</h2>
+<h3>先做出網頁</h3>
+<ol>
+  <li>打開 Claude 電腦版，進到 Code 分頁。</li>
+  <li>點輸入框下面的資料夾名字，選單拉到最下面選 <b>開啟資料夾…</b>，選剛剛解壓縮出來的「山嵐營區」資料夾。</li>
+  <li>跳出「要信任此工作區嗎？」時，這是你自己的資料，按 <b>信任工作區</b>。</li>
+  <li>說一句：</li>
+</ol>
+<div class="prompt">用訂位表做一頁給客人看的網頁，列出接下來四個週末每一區還剩幾個營位，手機上要好看。再加上山上未來一週的天氣。<button>複製</button></div>
+<p>它先讀了兩份表，然後停下來問營區在哪一帶。資料裡沒有地址，它不知道天氣要查哪一座山。示範選的是苗栗泰安。網頁做好以後，四個週末裡每一區週五晚、週六晚還剩幾帳，一眼就看得清楚。</p>
+
+<h3>指定用氣象署的預報</h3>
+<p>只說「加上天氣」的時候，它找了一個國外的免費天氣服務，不用申請任何東西。阿滿想用中央氣象署的鄉鎮預報，台灣山區的天氣，官方的預報比較準。所以她再說一次，這次講清楚要用哪一家：</p>
+<div class="prompt">天氣改用中央氣象署的鄉鎮預報，網頁存成資料夾裡的檔案。<button>複製</button></div>
+<p>這一次它回報：程式改成讀氣象署的預報了，可是氣象署的 API 要一組授權碼，它手上沒有。它列出你要做的事：到 <a href="https://opendata.cwa.gov.tw/">opendata.cwa.gov.tw</a> 免費註冊，取得授權碼。最後跳出一個問題「要把氣象署授權碼給我測試嗎？」，下面有「我自己跑」和「給你測試」兩個按鈕。選 <b>我自己跑</b>。</p>
+<figure class="shot"><img src="files/day07/key_ask.webp" width="1080" height="390" loading="lazy" alt="Claude 問要不要把氣象署授權碼給它測試，選項是我自己跑和給你測試"><figcaption>選「我自己跑」，不要把授權碼貼進對話裡。</figcaption></figure>
+
+<h3>API 和金鑰是什麼</h3>
+<p><b>API</b> 是一個服務開給程式用的窗口。程式拿著一把鑰匙去窗口問，對方就把資料交出來。這把鑰匙叫 <b>金鑰</b>，氣象署叫它 <b>授權碼</b>。</p>
+<p>金鑰跟密碼一樣，誰拿到了，就能用你的名義去拿資料；如果是要收費的服務，費用還會記在你的帳上。所以金鑰不貼在對話裡，也不寫進程式和網頁。</p>
+
+<h3>申請氣象署的授權碼</h3>
+<ol class="steps">
+  <li>打開 <a href="https://opendata.cwa.gov.tw/">氣象資料開放平臺</a>，點右上角的 <b>登入/註冊</b>。</li>
+  <li>用一個電子郵件加入會員。加入免費，不用信用卡。</li>
+  <li>登入以後，點 <b>會員資訊</b> → <b>API授權碼</b> → <b>取得授權碼</b>。</li>
+  <li>畫面上會出現一串 <code>CWA-</code> 開頭的字，這就是你的授權碼。</li>
+</ol>
+<figure class="shot"><img src="files/day07/cwa_login.webp" width="1400" height="206" loading="lazy" alt="氣象資料開放平臺首頁右上角的登入/註冊"><figcaption>氣象資料開放平臺的首頁，右上角就是「登入/註冊」。</figcaption></figure>
+<p>一般會員 24 小時內可以呼叫 2 萬次。一間營區的網頁一天更新幾次，遠遠用不到這麼多。</p>
+
+<h3>把授權碼放進 .env</h3>
+<p><b>.env</b> 是放在資料夾裡、專門放金鑰的純文字檔，你可以把它想成一個抽屜。程式要用授權碼的時候，自己去抽屜拿，授權碼不會經過對話，也不會寫進網頁。最簡單的做法，是請它先建一個只有欄位名稱的 .env：</p>
+<div class="prompt">請在這個資料夾建一個 .env，裡面只寫氣象署授權碼的欄位名稱，等號後面留空，授權碼我自己貼。<button>複製</button></div>
+<p>然後你自己用文字編輯器打開 .env，把授權碼貼在等號後面，存檔。檔名的開頭是一個點，電腦預設會把這種檔案藏起來，要先讓它顯示出來：</p>
+<div class="tabs" role="tablist">
+  <button role="tab" data-os="mac" aria-selected="true"> macOS</button>
+  <button role="tab" data-os="win" aria-selected="false">⊞ Windows</button>
+</div>
+<div class="osp" data-os="mac"><p>在 Finder 打開「山嵐營區」資料夾，按 <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>.</kbd>，就看得到 .env。對它按右鍵 → <b>打開檔案的應用程式</b> → <b>文字編輯</b>。</p></div>
+<div class="osp" data-os="win"><p>在檔案總管上方點 <b>檢視</b> → <b>顯示</b> → <b>隱藏的項目</b>，就看得到 .env。對它按右鍵，用 <b>記事本</b> 打開。</p></div>
+<p>貼好以後，跟它說：</p>
+<div class="prompt">授權碼放在 .env，從那裡讀，不要寫進程式和網頁裡。幫我跑一次，產生網頁。<button>複製</button></div>
+<p>它改了程式，產生一個 <code>index.html</code>，還主動搜過程式和網頁，告訴你裡面找不到授權碼。這一次網頁用的是氣象署真實的七天預報。用手機打開，最下面就是山上這一週的天氣和溫度，週五和週六用黃底標出來。</p>
+<figure class="shot"><img src="files/day07/phone.webp" width="1400" height="736" loading="lazy" alt="手機上的營區網頁：四個週末各區剩幾帳，最下面是氣象署七天預報"><figcaption>左邊是四個週末各區還剩幾帳；往下滑到底，就是氣象署的七天預報。</figcaption></figure>
+
+<h3>再加一道：連它自己也不准讀</h3>
+<div class="prompt">把 .env 設成你自己也不准讀，只有程式執行的時候會用到。<button>複製</button></div>
+<p>它在 <code>.claude/settings.json</code> 加了禁止讀、改、寫 .env 的規則，就是上一課講的權限。它也照實說了：這是規則，不是保險箱。金鑰千萬不能跟著檔案一起送出去，下一段就會碰到這件事。</p>
+<div class="note"><b>Claude 自己也有 API</b><br>寫程式的人可以用 Claude 的 API，照用量另外付費。API 的費用跟你每個月的訂閱分開算，兩邊不通用。</div>
+
+<h2>B｜存上 GitHub：私人倉庫和 .gitignore</h2>
+<p>到這裡為止，東西都在阿滿的電腦裡，電腦一壞就沒了。Day 5 講過，Git 是存檔，可是那些存檔也只在這台電腦裡。<b>GitHub</b> 是一個網站，讓你把存檔放一份到雲端，申請帳號免費。放上去的那一包叫 <b>倉庫</b>，英文是 repository。倉庫分成公開和私人兩種：公開的倉庫全世界都看得到，私人的倉庫只有你的帳號看得到。</p>
+<p>還沒有 GitHub 帳號的話，先到 <a href="https://github.com/">github.com</a> 申請一個，作業那一段有每一步要點哪裡。</p>
+<div class="prompt">我怕電腦壞掉，幫我把這個資料夾存一份到 GitHub。<button>複製</button></div>
+<p>它會先問你要用哪一個 GitHub 帳號，再問：「訂位表有客人的姓名和電話，要一起存進去嗎？我會建私人儲存庫，並且一定不存 .env。」選 <b>訂位表不存</b>，客人的資料留在電腦上。</p>
+<figure class="shot narrow"><img src="files/day07/github_ask.webp" width="1040" height="760" loading="lazy" alt="Claude 問訂位表要不要一起存進 GitHub，選項有一起存、訂位表不存、其他"><figcaption>它會提醒你，可是你要看懂它在問什麼。</figcaption></figure>
+
+<h3>.gitignore：不帶走的清單</h3>
+<p>推上去之前，它先建了一個 <code>.gitignore</code>。這是一張清單，寫在上面的檔案，Git 就不會帶走。這一次清單上是 <code>.env</code> 和 <code>訂位表.xlsx</code>。它先確認要上去的是哪些檔案，然後建了一個私人倉庫推上去。最後它會列出來：存進去的有程式、版型和營位表；沒有存的是 .env 和訂位表。</p>
+
+<h3>電腦上還沒登入 GitHub 的話</h3>
+<ul>
+  <li>它會用 <a href="https://cli.github.com/">GitHub CLI</a>（指令叫 <code>gh</code>）幫你登入。瀏覽器會跳出 GitHub 的授權頁，照頁面上的步驟按下授權就好。</li>
+  <li>電腦裡登入了好幾個 GitHub 帳號時，推送可能會被拒絕。看到「被拒」，先問它現在用的是哪一個帳號。</li>
+</ul>
+<div class="note warn"><b>金鑰萬一已經推上去了</b><br>只把檔案刪掉沒有用。Git 是存檔，舊的存檔裡還留著那組金鑰。要馬上到原本的服務，把那組金鑰作廢，再換一組新的。</div>
+
+<h2>C｜變成一個網址：GitHub Pages</h2>
+<p>東西在 GitHub 上了，可是倉庫的頁面是給寫程式的人看的。客人要的是一個點得開的網址。</p>
+<div class="prompt">幫我把這一頁變成客人打得開的網址。<button>複製</button></div>
+<p>它另外建了一個公開的倉庫，裡面只放 <code>index.html</code> 這一頁，再用指令直接打開 GitHub Pages，不用你去網站上按，網址就打得開了。剛才備份用的那個倉庫，仍然是私人的。</p>
+<p>網址的格式是「帳號.github.io/倉庫名稱」。示範做出來的網址是 <a href="https://kogmow0721-dev.github.io/shanlan-camp-page/">https://kogmow0721-dev.github.io/shanlan-camp-page/</a>，可以點開來看。</p>
+<figure class="shot"><img src="files/day07/page_repo.webp" width="1400" height="453" loading="lazy" alt="GitHub 上的公開倉庫 shanlan-camp-page，裡面只有 index.html"><figcaption>倉庫名稱旁邊標著 Public（公開），裡面只有一個 index.html，沒有 .env，也沒有訂位表。</figcaption></figure>
+
+<h3>GitHub Pages 是什麼</h3>
+<p><b>GitHub Pages</b> 是 GitHub 附的功能，可以把倉庫裡的網頁變成一個網址。把工具放到大家連得到的地方，就叫 <b>上線</b>。</p>
+<div class="three">
+  <div><b>免費</b><span>公開的倉庫可以免費用；私人的倉庫要付費方案</span></div>
+  <div class="on"><b>網站一定公開</b><span>誰都打得開，所以只放給客人看的那一頁</span></div>
+  <div><b>不能開網路商店</b><span>官方寫明不能拿來做網路商店；一頁營區公告沒問題</span></div>
+</div>
+<p>完整的規定在 <a href="https://docs.github.com/zh/pages">GitHub Pages 官方文件</a>。</p>
+
+<h3>前端和後端</h3>
+<p>客人看到的畫面叫 <b>前端</b>，像營區門口的公告欄，路過的人都看得到，也翻得到。客人看不到、在後面做事的叫 <b>後端</b>，像營區的管理室。鑰匙和訂位表只能放在管理室裡。阿滿的管理室就是她的電腦：跟氣象署拿天氣、算每一區還剩幾帳，都在電腦上做完，只把做好的網頁貼到公告欄上。</p>
+
+<h3>自己檢查一次</h3>
+<p>在 Chrome 打開網頁，按右鍵選 <b>檢視網頁原始碼</b>，網頁裡寫的每一個字都會列出來。按 <kbd>⌘</kbd>/<kbd>Ctrl</kbd> + <kbd>F</kbd> 搜授權碼開頭的 <code>CWA</code>，找不到；客人的電話也找不到。</p>
+
+<h3>訂位有變的時候</h3>
+<p>阿滿照平常一樣改訂位表，改完說一句：</p>
+<div class="prompt">更新網頁<button>複製</button></div>
+<p>示範裡，本週六的雨棚從剩 1 帳變成額滿，網址上的數字也跟著變了。客人把網頁重新整理一次，看到的就是最新的。</p>
+
+<h2>D｜推上去之前自動檢查：Hook</h2>
+<p>每次推上 GitHub 之前，都要提醒一句「先檢查有沒有金鑰和電話」。哪天你忘了說，客人的電話就會跟著網頁跑出去。<b>Hook</b> 像一道柵欄：你先設好一個時間點，例如「要推上 GitHub 之前」，每到這個時間點，電腦就一定會跑一次你設好的檢查。這件事不靠 Claude 記得，也不靠你記得。</p>
+<div class="prompt">設一個 Hook：每次要推上 GitHub 之前，先檢查要上去的檔案裡有沒有金鑰或手機號碼，有就擋下來。<button>複製</button></div>
+<p>它寫了一支檢查的程式 <code>.claude/hooks/pre-push-check.py</code>，再把 Hook 寫進 <code>.claude/settings.json</code>。這種 Hook 叫 <code>PreToolUse</code>，意思是 Claude 每次要執行工具之前，先跑一次這支檢查；檢查沒過，那個動作就被擋下。它也自己放了假的電話和授權碼測過，最後提醒你：要開一個新的工作階段才會生效。</p>
+
+<h3>開了新的工作階段，Hook 卻沒有擋</h3>
+<p>阿滿按 <b>新增</b> 開了一個新的工作階段，故意說：</p>
+<div class="prompt">在網頁底下加上王小姐的電話，然後推上去。<button>複製</button></div>
+<p>結果它沒有擋下來，電話被推上線了，剛剛設的 Hook 一次都沒有跑。示範用的電話是假的，我們馬上撤了回來。</p>
+
+<h3>原因在「信任」那一步</h3>
+<p>Claude 電腦版是在你按 <b>信任工作區</b> 的那一刻，決定要不要執行資料夾裡的 Hook。先信任資料夾、後來才加 Hook 的話，Hook 不會生效。</p>
+<p>我們把整個資料夾複製一份，再用 <b>開啟資料夾…</b> 打開複製出來的那一份。這次跳出來的信任視窗多了一項「可執行程式碼的項目」，下面列著 <code>.claude/settings.json</code>，就是寫了 Hook 的那個設定檔。看清楚了，再按 <b>信任工作區</b>。</p>
+<figure class="shot narrow"><img src="files/day07/trust_hooks.webp" width="860" height="570" loading="lazy" alt="信任工作區的視窗，多了一行可執行程式碼的項目：.claude/settings.json"><figcaption>資料夾裡有 Hook 的時候，信任視窗會把設定檔列出來。</figcaption></figure>
+<p>再試著推上去，這次畫面上寫著「失敗」。Hook 的訊息是「推送已被擋下：發現手機號碼」。</p>
+<figure class="shot"><img src="files/day07/blocked.webp" width="1400" height="803" loading="lazy" alt="推送失敗，Hook 的訊息是推送已被擋下，發現手機號碼"><figcaption>電話號碼在推上去之前就被 Hook 擋了下來。</figcaption></figure>
+<p>所以設好 Hook 以後，換一個新資料夾打開，信任的時候看一眼它列出來的設定檔。在終端機裡用 Claude Code 的話，沒有這個問題。</p>
+<div class="note"><b>小提醒</b><br>它寫的檢查會擋下所有 09 開頭的手機號碼。營區自己用手機當聯絡電話的話，那支電話也會被擋，碰到了就請它把營區的電話加進例外。另外，這個 Hook 只管 Claude 執行的指令，你自己在終端機打 <code>git push</code>，不會經過這道檢查。</div>
+<div class="three">
+  <div><b>說明書 CLAUDE.md</b><span>管規矩：請它遵守</span></div>
+  <div><b>權限</b><span>管能不能做：常做的放行，危險的上鎖</span></div>
+  <div class="on"><b>Hook</b><span>時間點一到，一定會自動跑的檢查</span></div>
+</div>
+<p>同一招也能用在別的地方，例如「每次做完就通知我」「每次改完就備份一份」。</p>
+
+<h2>今天的作業</h2>
+<h3>沒有付費的人：拿到你的第一個網址</h3>
+<p>把 Day 0 做的小工具放上網。GitHub 的網站是英文介面，下面的按鈕名稱照畫面上的英文寫。</p>
+<ol class="steps">
+  <li>回到 Day 0 做小工具的那段對話，說下面這一句，再把它做出來的檔案下載到電腦裡。
+    <div class="prompt">把這個小工具存成一個完整的網頁檔，檔名叫 index.html，讓我下載。<button>複製</button></div></li>
+  <li>打開 <a href="https://github.com/">github.com</a>，點 <b>Sign up</b> 申請帳號。要填電子郵件、密碼和使用者名稱，使用者名稱會變成網址的一部分。</li>
+  <li>登入以後，點右上角的 <b>+</b> → <b>New repository</b>。<b>Repository name</b> 填一個英文名字，例如 <code>my-first-page</code>；可見度選 <b>Public</b>；把 <b>Add README</b> 打開；最後按 <b>Create repository</b>。</li>
+  <li>在倉庫的頁面點 <b>Add file</b> → <b>Upload files</b>，把 index.html 拖進去，再按下面的 <b>Commit changes</b>。</li>
+  <li>點倉庫上方的 <b>Settings</b>，再點左邊選單裡的 <b>Pages</b>。</li>
+  <li>在 <b>Build and deployment</b> 底下，<b>Source</b> 選 <b>Deploy from a branch</b>；<b>Branch</b> 選 <b>main</b>，旁邊的資料夾維持 <code>/ (root)</code>，按 <b>Save</b>。</li>
+  <li>等一兩分鐘，重新整理這一頁，上面會出現 <b>Your site is live at</b>，後面就是你的網址，格式是「帳號.github.io/倉庫名稱」。點 <b>Visit site</b> 打開它。</li>
+</ol>
+<p>Pages 的免費方案只能用公開的倉庫，網站也一定公開。客人的名字、電話和任何金鑰，都不要放進這個倉庫。</p>
+<h3>有付費的人</h3>
+<p>去氣象署申請授權碼，請 Claude Code 做一頁有天氣的網頁，並且上線。換成你自己的店和你自己的地點。</p>
+<p>過程中卡住了，就截圖問 Claude。看不懂它問的問題、看不懂它寫的設定檔，都可以問。</p>
+<p>下一課：Day 8 綜合專題，從一個真實的需求開始，自己做出一個工具並且上線。明天上線。</p>
+
+<h2>官方來源</h2>
+<ul class="src">
+  <li><a href="https://opendata.cwa.gov.tw/">中央氣象署：氣象資料開放平臺</a></li>
+  <li><a href="https://docs.github.com/zh/pages">GitHub 文件：GitHub Pages</a></li>
+  <li><a href="https://docs.github.com/zh/pages/getting-started-with-github-pages/creating-a-github-pages-site">GitHub 文件：建立 GitHub Pages 網站</a></li>
+  <li><a href="https://docs.github.com/zh/pages/getting-started-with-github-pages/github-pages-limits">GitHub 文件：GitHub Pages 的限制</a></li>
+  <li><a href="https://docs.github.com/zh/get-started/git-basics/ignoring-files">GitHub 文件：忽略檔案（.gitignore）</a></li>
+  <li><a href="https://docs.github.com/zh/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository">GitHub 文件：從倉庫移除敏感資料</a></li>
+  <li><a href="https://cli.github.com/">GitHub CLI</a></li>
+  <li><a href="https://code.claude.com/docs/en/hooks-guide">Claude Code 文件：Hooks</a></li>
+  <li><a href="https://code.claude.com/docs/en/permissions">Claude Code 文件：權限設定</a></li>
+  <li><a href="https://code.claude.com/docs/en/desktop">Claude Code 文件：電腦版 App</a></li>
+  <li><a href="https://claude.com/pricing">Claude：方案與價格（含 API 價格）</a></li>
+</ul>
+<p class="src">資料查證日期：2026 年 11 月 19 日。App 的畫面是當天用付費帳號、繁體中文介面實際操作的樣子。AI 工具更新很快，功能和價格請以官方網站為準。</p>
+
+<footer><a href="../">首頁</a><a href="../privacy.html">隱私權政策</a><span>© 2026 知識共享</span></footer>
+</div>
+<script>
+(function(){
+  document.querySelectorAll('.prompt button').forEach(function(b){b.onclick=function(){
+    var t=b.parentNode.firstChild.textContent.trim();
+    (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){b.textContent='已複製';setTimeout(function(){b.textContent='複製'},1500)},function(){});
+  }});
+  var saved; try{saved=localStorage.getItem('os')}catch(e){}
+  var os = saved || (/Win/i.test(navigator.platform||navigator.userAgent)?'win':'mac');
+  function set(o){os=o;try{localStorage.setItem('os',o)}catch(e){}
+    document.querySelectorAll('.tabs button').forEach(function(b){b.setAttribute('aria-selected',b.dataset.os===o)});
+    document.querySelectorAll('.osp').forEach(function(p){p.classList.toggle('on',p.dataset.os===o)});}
+  document.querySelectorAll('.tabs button').forEach(function(b){b.onclick=function(){set(b.dataset.os)}});
+  set(os);
+})();
+</script>
+</body></html>
