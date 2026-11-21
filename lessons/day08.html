@@ -1,0 +1,150 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="../apple-touch-icon.png"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Day 8：綜合專題，從一句抱怨做到上線｜知識共享</title>
+<meta name="description" content="手上只有一句「結單好累」，怎麼一步一步做成真的在用的工具：用規劃模式讓 Claude Code 反過來問你、先做一小塊並附上來源、互不相干的事派子代理同時做、裝外掛讓網頁變好看、上線後照團員的抱怨再改，最後做成一個技能包。用社區團購的結單當例子，附示範資料和每一步要說的話。">
+<link rel="stylesheet" href="../style.css">
+<style>
+.files{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:18px 0}
+.files a{display:flex;gap:12px;align-items:center;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:inherit;text-decoration:none;transition:transform .15s,border-color .15s}
+.files a:hover{transform:translateY(-2px);border-color:var(--accent)}
+.files i{flex:none;font-style:normal;font-weight:800;font-size:12px;padding:6px 8px;border-radius:8px;color:#fff;background:#1d8a4e}
+.files i.c{background:#4b6cb7}.files i.t{background:#7a6a55}
+.files small{display:block;color:var(--muted);font-size:13px}
+.prompt{position:relative;margin:14px 0;padding:14px 18px;border-radius:12px;background:var(--card);border:1px dashed var(--line);font-size:16px;line-height:1.7;overflow-wrap:anywhere}
+.prompt::before{content:"你可以這樣問";display:block;font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--accent);margin-bottom:4px}
+.prompt.pre{white-space:pre-line}
+.prompt button{position:absolute;top:10px;right:10px;font:inherit;font-size:12px;line-height:1.7;white-space:nowrap;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.prompt button:hover{border-color:var(--accent);color:var(--accent)}
+.three{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:18px 0}
+.three div{padding:16px 18px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
+.three div.on{border-color:var(--accent);box-shadow:0 8px 30px rgba(0,0,0,.12)}
+.three b{display:block;margin-bottom:2px}
+.three span{color:var(--muted);font-size:14px}
+.shot{margin:18px 0 22px}
+.shot img{display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--line);box-shadow:0 10px 32px rgba(0,0,0,.16);background:#fff}
+.shot.narrow img{max-width:560px;margin:0 auto}
+.shot figcaption{margin-top:8px;font-size:14px;color:var(--muted);text-align:center}
+.lesson ol.steps{counter-reset:s;list-style:none;padding-left:0}
+.lesson ol.steps>li{counter-increment:s;position:relative;padding-left:40px;margin:12px 0}
+.lesson ol.steps>li::before{content:counter(s);position:absolute;left:0;top:2px;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:800;color:#1a1205;background:var(--accent)}
+
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0}.pair figure{margin:0}.pair img{width:100%;height:auto;border-radius:14px;border:1px solid var(--line)}.pair figcaption{text-align:center;font-size:14px;color:var(--muted);margin-top:6px}
+</style></head><body><div class="wrap lesson">
+<header><a class="logo" href="../" style="color:inherit;text-decoration:none"><picture><source srcset="../mark-dark.svg" media="(prefers-color-scheme: dark)"><img class="mark" src="../mark.svg" alt=""></picture>知識共享 ShareKnowledge</a></header>
+<div class="crumb"><a href="../">首頁</a> / 課程</div>
+<span class="tag">Day 8</span>
+<h1>綜合專題：從一句抱怨，做到上線</h1>
+<p class="lead">社區團購的團主阿琪，每個禮拜開一團，LINE 群組裡一百八十個鄰居在底下回「+1」「同上」「我改成 3 包」「幫我媽也訂一份」。截止以後，她要把幾百則訊息從頭滑到尾，一筆一筆抄成訂單、算每個人要付多少、跟廠商叫貨、對匯款的末五碼，每個禮拜都弄到半夜。前幾課都是先知道要請 Claude 做什麼；這一課教的是順序：手上只有一句抱怨的時候，怎麼一步一步做成一個真的在用的工具。今天同樣要用付費版的 Claude Code。不會的，就問 Claude。</p>
+
+<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/afvqaZTwW6s?list=PLaAuH9dstA6Q" title="Day 8｜綜合專題：從一句抱怨，做到上線" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<p class="src">看不到影片？<a href="https://www.youtube.com/watch?v=afvqaZTwW6s&amp;list=PLaAuH9dstA6Q">到 YouTube 觀看</a>。每一段的一分鐘短片在 <a href="https://www.youtube.com/playlist?list=PLLv0kZ0Yf5bI">AI 實戰短片播放清單</a>。</p>
+
+<h2>先下載示範檔案</h2>
+<p>「巷口好物團」一週的群組聊天記錄、商品表和匯款紀錄，團員的名字、匯款全部是假的。聊天記錄照 LINE「傳送聊天記錄」存出來的文字檔格式做，裡面故意放了同上、改數量、取消、幫家人代訂、只回 +1、截止後才喊的訊息。「第二週」資料夾是下一週的資料，最後一步才用。</p>
+<div class="files">
+  <a href="files/day08/xiangkou_demo.zip" download="巷口好物團_示範資料.zip"><i class="c">ZIP</i><span>團購結單的示範資料<small>解壓縮之後有「巷口好物團」資料夾：聊天記錄、商品表.xlsx、匯款紀錄.xlsx、第二週</small></span></a>
+</div>
+<p>想用自己的群組照做，先把聊天記錄存成文字檔：</p>
+<div class="tabs" role="tablist">
+  <button role="tab" data-os="mac" aria-selected="true">📱 手機</button>
+  <button role="tab" data-os="win" aria-selected="false">💻 電腦版 LINE</button>
+</div>
+<div class="osp" data-os="mac"><p>打開群組，點右上角的選單 → <b>設定</b> → <b>傳送聊天記錄</b>，存到雲端硬碟或寄給自己，再下載到電腦。</p></div>
+<div class="osp" data-os="win"><p>打開群組，點右上角的選單 → <b>儲存聊天</b>（有的版本叫「傳送聊天記錄」），存成 .txt。</p></div>
+<p>真的群組記錄裡有鄰居的名字，這份檔案只留在自己的電腦，D 段會講怎麼放上網才不會一起公開。</p>
+
+<h2>A｜先讓它問你：規劃模式</h2>
+<p><b>規劃模式</b>是 Claude Code 的一種工作模式。它會讀檔案、會想，可是不改任何東西，最後交一份計畫給你看，你同意了它才開始做。不知道要叫它做什麼的時候，就先用這個模式。</p>
+<ol>
+  <li>打開 Claude 電腦版的 Code 分頁，用輸入框下面的資料夾名字 → <b>開啟資料夾…</b>，選「巷口好物團」，按 <b>信任工作區</b>。</li>
+  <li>點輸入框右下角的 <b>手動</b>，換成 <b>規劃</b>（說明寫「進行變更前先建立計畫」）。</li>
+  <li>說一句抱怨就好：</li>
+</ol>
+<div class="prompt">我每個禮拜結單都弄到半夜，資料都在這個資料夾。先問我問題，不要動手。<button>複製</button></div>
+<p>它先把資料夾讀過一遍，然後跳出四題選擇題：哪幾段最花時間、最想拿到什麼、用起來希望是什麼樣子，還有「遇到看不準的訂單要怎麼處理」。最後一題是你自己很難想到要交代的。每一題都有它建議的選項，點一下就好。</p>
+<figure class="shot"><img src="files/day08/questions.webp" width="1400" height="741" loading="lazy" alt="Claude Code 規劃模式跳出的選擇題：結單時哪幾段最花時間？"><figcaption>只說了一句抱怨，它就反過來問你。</figcaption></figure>
+<p>回答完，右邊打開一份計畫，把它在聊天記錄裡看到的難點一條一條列出來。底下有「拒絕／修訂…／接受／接受並使用自動模式」。計畫不是考卷，可以改，也可以砍。按 <b>修訂…</b>，說：</p>
+<div class="prompt">計畫很好，可是先只做第一步：把聊天記錄變成一張訂單表。每一筆都附上是根據哪一則訊息，拿不準的另外列出來問我，不要自己猜。叫貨單、算錢、對匯款等一下再做。<button>複製</button></div>
+<figure class="shot"><img src="files/day08/plan.webp" width="1400" height="741" loading="lazy" alt="右邊打開的計畫：巷口好物團每週結單自動化"><figcaption>計畫的標題，會跟著你的修訂改成「第一步」。</figcaption></figure>
+
+<h2>B｜先做一小塊：附上來源，拿不準的列出來</h2>
+<p>計畫再好，也不要一次做完。一次做出一大包，錯了也不知道錯在哪裡。按 <b>接受</b> 之後，它寫了一支程式拆聊天記錄，第一輪只收確定的訂單，其他的放進「待確認」，整理成問題問你：這些簡稱對不對、幫家人代訂的算誰、只回 +1 的算什麼、截止後才喊的收不收。回答完，它照你的規矩再跑一次，來回兩三輪，待確認的就清空了。</p>
+<p>它也會自己發現問題。示範時它發現「照上一位抄」會抄到別人幫家人代訂的那一份，這種錯，人工抄單也很容易犯。</p>
+<p>你回答過的規矩，記進說明書（Day 6），下禮拜就不用再問；做好一塊就存一個版本（Day 5）：</p>
+<div class="prompt">把我回答過的這些規矩記進說明書 CLAUDE.md，下禮拜不用再問。然後用 Git 幫我存一個版本，說明寫「第一步：訂單表」。<button>複製</button></div>
+<figure class="shot"><img src="files/day08/orders.webp" width="1400" height="741" loading="lazy" alt="訂單表：每個人訂了什麼、幾份，最後一欄是來源行號"><figcaption>每一列的最後一欄，寫著是根據聊天記錄的哪幾行。</figcaption></figure>
+
+<h2>C｜剩下的分頭做：子代理和外掛</h2>
+<p><b>子代理</b>是 Claude Code 派出去的分身。每個分身拿到一件事、有自己的一張工作桌，做完只把結果交回來。互不相干的事才適合分頭做；要接力的事，就不適合。分身越多，用量也用掉越多（Day 5）。</p>
+<div class="prompt">剩下三件事：給廠商的叫貨單、每個人要付多少和對匯款、給團員查訂單的網頁。這三件事互不相干，派分身同時做。<button>複製</button></div>
+<figure class="shot"><img src="files/day08/subagents.webp" width="1400" height="741" loading="lazy" alt="派三個分身同時開工，右邊背景任務列出三個分身"><figcaption>右邊的「背景任務」列出三個分身，各自在跑，做完一個少一個。</figcaption></figure>
+<p>做好的查訂單網頁能用，可是很陽春。這時候可以裝一個<b>外掛</b>。外掛是別人打包好的一整包，裡面可以有技能包、子代理、Hook，也可以有連接器，裝一次全部到位。</p>
+<ol class="steps">
+  <li>按輸入框左邊的 <b>+</b> → <b>外掛程式</b> → <b>瀏覽外掛程式</b>。</li>
+  <li>搜尋 <code>frontend</code>，找到 Anthropic 官方的 <b>frontend-design</b>，按 <b>新增</b>。一按就裝好，不用開新的工作階段。</li>
+  <li>說：</li>
+</ol>
+<div class="prompt">我剛裝了 frontend-design 外掛。用它把查訂單的網頁重新設計一次，手機上要更好看、更好用。<button>複製</button></div>
+<figure class="shot"><img src="files/day08/plugin.webp" width="1400" height="741" loading="lazy" alt="外掛目錄搜尋 frontend，第一個是官方的 frontend-design"><figcaption>官方的 frontend-design 外掛。</figcaption></figure>
+<div class="pair"><figure><img src="files/day08/page_before.webp" width="520" height="1000" loading="lazy" alt="裝外掛前的網頁"><figcaption>裝外掛前</figcaption></figure><figure><img src="files/day08/page_after.webp" width="520" height="1000" loading="lazy" alt="裝外掛後的網頁：市集收據風"><figcaption>裝外掛後：市集收據風</figcaption></figure></div>
+
+<h2>D｜放出去，再改：上線、聽抱怨、做成技能包</h2>
+<p>上線的做法 Day 7 教過，這一次只用一句話：</p>
+<div class="prompt">把查訂單的網頁放上網給團員用：整個資料夾備份到私人倉庫，給團員看的頁面另外放一個公開倉庫，只放網頁。團員的名字和聊天記錄都不要上去。<button>複製</button></div>
+<p>它先停下來問了幾題（用哪個 GitHub 帳號、倉庫叫什麼），理由是「上傳後很難收回」。示範時它做的網頁是加密的：團員要輸入自己的 LINE 名稱，加上團主私訊給他的查詢碼，才打得開自己的訂單。網頁上的東西誰都能翻，所以名字和訂單都不能用看得懂的樣子放上去。</p>
+<p>工具做好不是結束。真的有人用了，才知道缺什麼。團員的抱怨不用自己翻譯成指令，原話貼過去就好：</p>
+<div class="prompt pre">網頁放出去之後，團員在群組這樣說：
+「我手機點連結打不開，要我輸入的碼在哪裡？」
+「可以順便看幾點取貨、要不要帶袋子嗎？」
+團員這樣說，幫我改。<button>複製</button></div>
+<p>它沒有自己編答案，反問「要不要帶袋子只有你知道」。改好後，取貨時間和「請自備袋子」放在最上面，再用內建的瀏覽器打開線上網址檢查一次。最後，把每個禮拜都要做的流程做成技能包（Day 3、Day 6）：</p>
+<div class="prompt">把這整套做成一個技能包，叫「結單」。以後我把新一週的聊天記錄和匯款紀錄放進資料夾，說一句「結單」，訂單表、叫貨單、對帳和網頁都要更新好。<button>複製</button></div>
+<p>下一週，把「第二週」資料夾裡的檔案放進來，開一個新的工作階段，只說「結單」。示範時第二週換了一批商品，它停下來說「結不下去，原因不在訊息本身」，問了三個問題，沒有硬做。回答完，它把技能包改好，叫貨單和網頁都更新上線。第一次碰到新狀況，它會問你；你回答了，技能包就再聰明一點。</p>
+<figure class="shot"><img src="files/day08/week2.webp" width="1400" height="741" loading="lazy" alt="新的一週說「結單」，換了一批商品，它停下來問"><figcaption>新的一週只說「結單」。</figcaption></figure>
+<div class="three">
+  <div><b>先讓它問你</b><span>規劃模式，計畫可以改</span></div>
+  <div><b>先做一小塊</b><span>附上來源，拿不準的列出來</span></div>
+  <div><b>剩下的分頭做</b><span>互不相干的派分身</span></div>
+  <div class="on"><b>放出去，再改</b><span>抱怨原話貼給它，做成技能包</span></div>
+</div>
+<p>工具會改版，這四步的順序不會變。同一招也能用在代購的訂單、才藝班的報名、社區一起訂便當。</p>
+
+<h2>今天的作業</h2>
+<h3>沒有付費的人</h3>
+<p>在聊天版貼一句自己工作上的抱怨，請它先問你問題，再給計畫：</p>
+<div class="prompt">我工作上有一件事很煩：（寫下你的抱怨）。先問我五個問題，了解清楚之後，再給我一份一步一步的計畫。先不要做。<button>複製</button></div>
+<h3>有付費的人</h3>
+<p>用規劃模式做自己的第一個小工具，先做最痛的那一塊。</p>
+<p>過程中卡住了，就截圖問 Claude。看不懂它問的問題、看不懂它寫的計畫，都可以問。</p>
+<p>下一課：Day 9，讓 Claude 讀懂公司的三百份文件，問一句就找到答案（RAG 入門）。</p>
+
+<h2>官方來源</h2>
+<ul class="src">
+  <li><a href="https://code.claude.com/docs/en/desktop">Claude Code 文件：電腦版 App（模式、背景任務、內建瀏覽器）</a></li>
+  <li><a href="https://code.claude.com/docs/en/best-practices">Claude Code 文件：最佳做法（先請 Claude 訪談你）</a></li>
+  <li><a href="https://code.claude.com/docs/en/sub-agents">Claude Code 文件：子代理</a></li>
+  <li><a href="https://code.claude.com/docs/en/plugins/install">Claude Code 文件：安裝外掛</a></li>
+  <li><a href="https://code.claude.com/docs/en/plugins/anthropic-marketplaces">Claude Code 文件：官方外掛市集</a></li>
+  <li><a href="https://github.com/anthropics/claude-plugins-official/tree/main/plugins/frontend-design">frontend-design 外掛</a></li>
+  <li><a href="https://code.claude.com/docs/en/desktop-quickstart">Claude Code 文件：電腦版快速開始（需要付費方案）</a></li>
+  <li><a href="https://claude.com/pricing">Claude：方案與價格</a></li>
+</ul>
+<p class="src">資料查證日期：2026 年 11 月 20 日。App 的畫面是 11 月 19、20 日用付費帳號、繁體中文介面實際操作的樣子。AI 工具更新很快，功能和價格請以官方網站為準。</p>
+
+<footer><a href="../">首頁</a><a href="../privacy.html">隱私權政策</a><span>© 2026 知識共享</span></footer>
+</div>
+<script>
+(function(){
+  document.querySelectorAll('.prompt button').forEach(function(b){b.onclick=function(){
+    var t=b.parentNode.firstChild.textContent.trim();
+    (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){b.textContent='已複製';setTimeout(function(){b.textContent='複製'},1500)},function(){});
+  }});
+  var saved; try{saved=localStorage.getItem('os')}catch(e){}
+  var os = saved || (/Win/i.test(navigator.platform||navigator.userAgent)?'win':'mac');
+  function set(o){os=o;try{localStorage.setItem('os',o)}catch(e){}
+    document.querySelectorAll('.tabs button').forEach(function(b){b.setAttribute('aria-selected',b.dataset.os===o)});
+    document.querySelectorAll('.osp').forEach(function(p){p.classList.toggle('on',p.dataset.os===o)});}
+  document.querySelectorAll('.tabs button').forEach(function(b){b.onclick=function(){set(b.dataset.os)}});
+  set(os);
+})();
+</script>
+</body></html>
