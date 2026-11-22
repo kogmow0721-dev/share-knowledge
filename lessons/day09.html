@@ -1,0 +1,122 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="../apple-touch-icon.png"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Day 9：RAG 入門，三百份文件問一句就找到｜知識共享</title>
+<meta name="description" content="RAG 是什麼？用 Claude 的專案把三百份公司文件放上書架，問一句它就先翻再答。實測一般聊天一次只能放 20 個檔案、專案可以整個資料夾上傳；寫三條指示讓答案附上檔名和原文；以及 RAG 適合查答案、不適合「每一份都要看」的事。用小旅行社的共用資料夾當例子，附示範資料。">
+<link rel="stylesheet" href="../style.css">
+<style>
+.files{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:18px 0}
+.files a{display:flex;gap:12px;align-items:center;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:inherit;text-decoration:none;transition:transform .15s,border-color .15s}
+.files a:hover{transform:translateY(-2px);border-color:var(--accent)}
+.files i{flex:none;font-style:normal;font-weight:800;font-size:12px;padding:6px 8px;border-radius:8px;color:#fff;background:#1d8a4e}
+.files i.c{background:#4b6cb7}.files i.t{background:#7a6a55}
+.files small{display:block;color:var(--muted);font-size:13px}
+.prompt{position:relative;margin:14px 0;padding:14px 18px;border-radius:12px;background:var(--card);border:1px dashed var(--line);font-size:16px;line-height:1.7;overflow-wrap:anywhere}
+.prompt::before{content:"你可以這樣問";display:block;font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--accent);margin-bottom:4px}
+.prompt.pre{white-space:pre-line}
+.prompt button{position:absolute;top:10px;right:10px;font:inherit;font-size:12px;line-height:1.7;white-space:nowrap;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.prompt button:hover{border-color:var(--accent);color:var(--accent)}
+.three{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:18px 0}
+.three div{padding:16px 18px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
+.three div.on{border-color:var(--accent);box-shadow:0 8px 30px rgba(0,0,0,.12)}
+.three b{display:block;margin-bottom:2px}
+.three span{color:var(--muted);font-size:14px}
+.shot{margin:18px 0 22px}
+.shot img{display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--line);box-shadow:0 10px 32px rgba(0,0,0,.16);background:#fff}
+.shot.narrow img{max-width:560px;margin:0 auto}
+.shot figcaption{margin-top:8px;font-size:14px;color:var(--muted);text-align:center}
+.lesson ol.steps{counter-reset:s;list-style:none;padding-left:0}
+.lesson ol.steps>li{counter-increment:s;position:relative;padding-left:40px;margin:12px 0}
+.lesson ol.steps>li::before{content:counter(s);position:absolute;left:0;top:2px;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:800;color:#1a1205;background:var(--accent)}
+
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0}.pair figure{margin:0}.pair img{width:100%;height:auto;border-radius:14px;border:1px solid var(--line)}.pair figcaption{text-align:center;font-size:14px;color:var(--muted);margin-top:6px}
+</style></head><body><div class="wrap lesson">
+<header><a class="logo" href="../" style="color:inherit;text-decoration:none"><picture><source srcset="../mark-dark.svg" media="(prefers-color-scheme: dark)"><img class="mark" src="../mark.svg" alt=""></picture>知識共享 ShareKnowledge</a></header>
+<div class="crumb"><a href="../">首頁</a> / 課程</div>
+<span class="tag">Day 9</span>
+<h1>RAG 入門：三百份文件，問一句就找到</h1>
+<p class="lead">遠颺旅行社六個人共用一個資料夾，裡面有三百多份文件：各家航空公司的行李規定、各國簽證、保險條款、一百多份行程表、退費規定。客人每天在 LINE 上問「東京團可以帶行動電源嗎」「出發前三天取消要扣多少」，新來的助理每一題都要翻很久。這一課讓 Claude 讀懂這三百份文件，問一句就找到答案。這個做法叫 <b>RAG</b>，聽起來很難，其實有付費方案就能用，而且不用寫程式，用 Claude 的聊天版就好。不會的，就問 Claude。</p>
+
+<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/W_XGT17nY3o?list=PLaAuH9dstA6Q" title="Day 9｜RAG 入門：三百份文件，問一句就找到" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<p class="src">看不到影片？<a href="https://www.youtube.com/watch?v=W_XGT17nY3o&amp;list=PLaAuH9dstA6Q">到 YouTube 觀看</a>。每一段的一分鐘短片在 <a href="https://www.youtube.com/playlist?list=PLLv0kZ0Yf5bI">AI 實戰短片播放清單</a>。</p>
+
+<h2>先下載示範檔案</h2>
+<p>「遠颺旅行社」的共用資料夾，276 份 Word 和 PDF。旅行社、航空公司、保險公司和所有規定都是假的，只是長得像真的，真的規定請看各家官網。</p>
+<div class="files">
+  <a href="files/day09/yuanyang_demo.zip" download="遠颺旅行社_示範資料.zip"><i class="c">ZIP</i><span>旅行社共用資料夾<small>約 22 MB。解壓縮之後有 7 個子資料夾：航空公司規定、簽證、保險、行程表、公司規定、內部作業、會議記錄</small></span></a>
+</div>
+
+<h2>A｜塞不進去：專案和背景資訊</h2>
+<p>先試試看直接丟進聊天：按輸入框的 <b>+</b> → <b>上傳或新增檔案</b>，把檔案全選起來。會跳出「一則訊息最多只能新增 20 個附件」。剩下的兩百多份塞不進去。</p>
+<figure class="shot"><img src="files/day09/limit20.webp" width="1400" height="741" loading="lazy" alt="一則訊息最多只能新增 20 個附件"><figcaption>一般聊天，一則訊息最多 20 個檔案。</figcaption></figure>
+<p>這時候要用<b>專案</b>。專案是一個會記得資料的房間，房間裡有一個書架，官方叫「專案知識庫」，畫面上叫 <b>背景資訊</b>。文件放上書架以後，在這個專案裡的每一次對話，它都會先去書架上翻。</p>
+<ol class="steps">
+  <li>在輸入框下面點 <b>專案或資料夾</b> → <b>新增專案</b>。填名字和目標，例如「回答客人關於行程、行李、簽證、保險、退費的問題」，按 <b>建立專案</b>。</li>
+  <li>專案頁面右邊有 <b>指示</b> 和 <b>背景資訊</b>。點背景資訊的 <b>新增</b> → <b>從裝置上傳</b> → <b>資料夾</b>，選解壓縮出來的資料夾。整個資料夾連子資料夾可以一次放上去。</li>
+  <li>確認視窗會寫「單次上傳，不會持續同步」：電腦裡的文件改了，書架上的不會跟著改，要自己再放一次。</li>
+</ol>
+<figure class="shot"><img src="files/day09/upload.webp" width="1400" height="741" loading="lazy" alt="將有 276 個檔案上傳至此專案"><figcaption>整個資料夾一次上傳，超過 30 MB 的檔案不會放進去。</figcaption></figure>
+<div class="note"><b>文件很多，要分幾個小時放</b><br>示範時傳到 188 份就停了，訊息是「已達每小時的文件轉換上限」。剩下的等一小時，再按「重試」就好。</div>
+<p>免費版也能開專案，最多五個，可是放的資料要在 Claude 一次能看的量以內。資料超過這個量時，自動改用 RAG，可以放大約十倍的資料，這只有付費方案才有。</p>
+
+<h2>B｜先翻再答：RAG 是什麼</h2>
+<p><b>RAG</b>（Retrieval-Augmented Generation，檢索增強生成）的意思只有四個字：<b>先翻再答</b>。它不是把三百份背起來；你問一句，它先去書架上找出跟問題有關的幾段，只看這幾段，再回答你。</p>
+<div class="prompt">東京團可以帶行動電源嗎？可以帶幾個？<button>複製</button></div>
+<p>回答上面有一行「已使用 6 個工具」，點開來會看到「已搜尋專案知識：行動電源 攜帶 規定」，這就是它在翻書架。再點開一層，它從三百份裡只拿出八份。</p>
+<figure class="shot"><img src="files/day09/search.webp" width="1400" height="741" loading="lazy" alt="已搜尋專案知識：行動電源 攜帶 規定"><figcaption>點開「已使用 N 個工具」，看得到它翻了哪些文件。</figcaption></figure>
+<p>航空公司的規定裡根本沒有「行動電源」四個字，寫的是「備用鋰電池」。它照意思找，不只照字找，所以找到了。藏在檢查表角落的小規定，它也找得到：</p>
+<div class="prompt">七十歲的客人要報名歐洲團，要準備什麼？<button>複製</button></div>
+
+<h2>C｜找不到就說不知道：三條規矩</h2>
+<p>資料夾裡有新舊兩版退費規定。示範時它用了修訂版，因為新版開頭寫了「舊版同時廢止」。文件寫清楚日期、舊的標明廢止，它才分得出來。問資料裡沒有的冰島團，它也說找不到。</p>
+<p>可是這次答對，不代表每次都會對。翻錯頁、沒翻到的時候，它一樣會回答，口氣一樣有把握。所以要讓每一個答案都查得到出處。點專案頁面右邊 <b>指示</b> 的 <b>新增</b>，寫上：</p>
+<div class="prompt pre">1. 只用背景資訊裡的資料回答，不要用自己的印象。
+2. 每個答案都附上檔名，並引用原文的那一句。
+3. 找不到就直接說找不到，不要猜。<button>複製</button></div>
+<figure class="shot"><img src="files/day09/cited.webp" width="1400" height="741" loading="lazy" alt="答案附上依據的檔名和兩句原文"><figcaption>寫了指示以後，答案多了「依據」和原文。</figcaption></figure>
+
+<h2>D｜它只翻了幾頁：RAG 適合什麼</h2>
+<div class="prompt">所有行程裡，哪幾團有安排自由活動日？全部列出來。<button>複製</button></div>
+<p>示範時它列了 19 團，還自己說「這份清單不一定完整，有些團可能漏掉」。因為它是先找有關的幾段，不是每一份都翻過。</p>
+<figure class="shot"><img src="files/day09/missing.webp" width="1400" height="741" loading="lazy" alt="確認有安排自由活動日的有 19 團，但這份清單不一定完整"><figcaption>它會自己說可能漏掉。</figcaption></figure>
+<div class="three">
+  <div class="on"><b>查一個答案</b><span>交給專案的知識庫（RAG）</span></div>
+  <div><b>每一份都要看</b><span>交給 Claude Code 一份一份讀（Day 4–8）</span></div>
+</div>
+<p>同一招也能用在診所的衛教單、物業的社區規約、公司的新人手冊。</p>
+
+<h2>今天的作業</h2>
+<h3>沒有付費的人</h3>
+<p>開一個專案，放十幾份工作上常查的文件，在指示寫上面那三條規矩，問三個平常要翻很久的問題。</p>
+<h3>有付費的人</h3>
+<p>把整個共用資料夾放進專案，問一個答案藏在角落的問題，看它附不附上原文。</p>
+<p>過程中卡住了，就截圖問 Claude。</p>
+<p>下一課：Day 10，讓 Claude 看懂照片，一疊照片變成一張表。</p>
+
+<h2>官方來源</h2>
+<ul class="src">
+  <li><a href="https://support.claude.com/en/articles/9517075-what-are-projects">Claude 說明：什麼是專案</a></li>
+  <li><a href="https://support.claude.com/en/articles/11473015-retrieval-augmented-generation-rag-for-projects">Claude 說明：專案的 RAG</a></li>
+  <li><a href="https://support.claude.com/en/articles/8241126-upload-files-to-claude">Claude 說明：上傳檔案的限制</a></li>
+  <li><a href="https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations">Claude 文件：減少答錯（幻覺）</a></li>
+  <li><a href="https://www.anthropic.com/news/contextual-retrieval">Anthropic：Contextual Retrieval</a></li>
+  <li><a href="https://claude.com/pricing">Claude：方案與價格</a></li>
+</ul>
+<p class="src">資料查證日期：2026 年 11 月 20 日。App 的畫面是當天用付費帳號、繁體中文介面實際操作的樣子。AI 工具更新很快，功能和價格請以官方網站為準。</p>
+
+<footer><a href="../">首頁</a><a href="../privacy.html">隱私權政策</a><span>© 2026 知識共享</span></footer>
+</div>
+<script>
+(function(){
+  document.querySelectorAll('.prompt button').forEach(function(b){b.onclick=function(){
+    var t=b.parentNode.firstChild.textContent.trim();
+    (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){b.textContent='已複製';setTimeout(function(){b.textContent='複製'},1500)},function(){});
+  }});
+  var saved; try{saved=localStorage.getItem('os')}catch(e){}
+  var os = saved || (/Win/i.test(navigator.platform||navigator.userAgent)?'win':'mac');
+  function set(o){os=o;try{localStorage.setItem('os',o)}catch(e){}
+    document.querySelectorAll('.tabs button').forEach(function(b){b.setAttribute('aria-selected',b.dataset.os===o)});
+    document.querySelectorAll('.osp').forEach(function(p){p.classList.toggle('on',p.dataset.os===o)});}
+  document.querySelectorAll('.tabs button').forEach(function(b){b.onclick=function(){set(b.dataset.os)}});
+  set(os);
+})();
+</script>
+</body></html>
