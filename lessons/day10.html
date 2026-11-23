@@ -1,0 +1,130 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="../apple-touch-icon.png"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Day 10：視覺入門，一疊照片變成一張表｜知識共享</title>
+<meta name="description" content="Claude 看得懂照片嗎？把書脊照片傳進 Claude 的聊天，它就把書名、作者、出版社列成表；22 張照片整理成一張可以下載的試算表。實測一則訊息最多 20 張、算一大堆東西只算得出大概、字太小會不確定，以及用照片對照手寫清單找出少了哪兩本。用二手書店收書當例子，附示範照片。">
+<link rel="stylesheet" href="../style.css">
+<style>
+.files{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:18px 0}
+.files a{display:flex;gap:12px;align-items:center;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:inherit;text-decoration:none;transition:transform .15s,border-color .15s}
+.files a:hover{transform:translateY(-2px);border-color:var(--accent)}
+.files i{flex:none;font-style:normal;font-weight:800;font-size:12px;padding:6px 8px;border-radius:8px;color:#fff;background:#1d8a4e}
+.files i.c{background:#4b6cb7}.files i.t{background:#7a6a55}
+.files small{display:block;color:var(--muted);font-size:13px}
+.prompt{position:relative;margin:14px 0;padding:14px 18px;border-radius:12px;background:var(--card);border:1px dashed var(--line);font-size:16px;line-height:1.7;overflow-wrap:anywhere}
+.prompt::before{content:"你可以這樣問";display:block;font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--accent);margin-bottom:4px}
+.prompt.pre{white-space:pre-line}
+.prompt button{position:absolute;top:10px;right:10px;font:inherit;font-size:12px;line-height:1.7;white-space:nowrap;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.prompt button:hover{border-color:var(--accent);color:var(--accent)}
+.three{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:18px 0}
+.three div{padding:16px 18px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
+.three div.on{border-color:var(--accent);box-shadow:0 8px 30px rgba(0,0,0,.12)}
+.three b{display:block;margin-bottom:2px}
+.three span{color:var(--muted);font-size:14px}
+.shot{margin:18px 0 22px}
+.shot img{display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--line);box-shadow:0 10px 32px rgba(0,0,0,.16);background:#fff}
+.shot.narrow img{max-width:560px;margin:0 auto}
+.shot figcaption{margin-top:8px;font-size:14px;color:var(--muted);text-align:center}
+.lesson ol.steps{counter-reset:s;list-style:none;padding-left:0}
+.lesson ol.steps>li{counter-increment:s;position:relative;padding-left:40px;margin:12px 0}
+.lesson ol.steps>li::before{content:counter(s);position:absolute;left:0;top:2px;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:800;color:#1a1205;background:var(--accent)}
+
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0}.pair figure{margin:0}.pair img{width:100%;height:auto;border-radius:14px;border:1px solid var(--line)}.pair figcaption{text-align:center;font-size:14px;color:var(--muted);margin-top:6px}
+</style></head><body><div class="wrap lesson">
+<header><a class="logo" href="../" style="color:inherit;text-decoration:none"><picture><source srcset="../mark-dark.svg" media="(prefers-color-scheme: dark)"><img class="mark" src="../mark.svg" alt=""></picture>知識共享 ShareKnowledge</a></header>
+<div class="crumb"><a href="../">首頁</a> / 課程</div>
+<span class="tag">Day 10</span>
+<h1>視覺入門：一疊照片變成一張表</h1>
+<p class="lead">拾頁二手書店的小禾，上禮拜收了三箱舊書，大約兩百本。每一本都要登記書名、作者、譯者、出版社，一本一本打進電腦，打到半夜還打不完。這一課讓 Claude 看懂照片：書排好、拍一張，它就把每一本列成表；二十幾張照片，整理成一張可以下載的試算表。這叫<b>視覺辨識</b>（官方叫 Vision），不用寫程式，用 Claude 的聊天就好。不會的，就問 Claude。</p>
+
+<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/oHVwwWY3TpU?list=PLaAuH9dstA6Q" title="Day 10｜視覺入門：一疊照片變成一張表" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<p class="src">看不到影片？<a href="https://www.youtube.com/watch?v=oHVwwWY3TpU&amp;list=PLaAuH9dstA6Q">到 YouTube 觀看</a>。每一段的一分鐘短片在 <a href="https://www.youtube.com/playlist?list=PLLv0kZ0Yf5bI">AI 實戰短片播放清單</a>。</p>
+
+<h2>先下載示範照片</h2>
+<p>「拾頁二手書店」的照片：22 張書脊照（三箱、197 本），加上整面書架、版權頁、賣家的手寫收購清單。書店、書名、作者、出版社全部是假的，照片是用 3D 軟體做的。</p>
+<div class="files">
+  <a href="files/day10/shiye_demo.zip" download="拾頁二手書店_示範照片.zip"><i class="c">ZIP</i><span>示範照片 31 張<small>約 12 MB。「書脊照」資料夾是 IMG_4101–4122，第一箱是 4101–4107；「其他」資料夾是書架、版權頁和手寫清單</small></span></a>
+</div>
+
+<h2>A｜拍一張就好</h2>
+<p>把書背朝外排好，用手機正面拍一張。打開 Claude 的聊天，按輸入框的 <b>+</b> → <b>上傳或新增檔案</b> → <b>從電腦上傳</b>，選照片（也可以直接把照片拖進輸入框），再打：</p>
+<div class="prompt">這是我店裡收來的二手書，幫我把每一本的書名、作者、出版社列成表。<button>複製</button></div>
+<figure class="shot"><img src="files/day10/table8.webp" width="1400" height="846" loading="lazy" alt="照片裡的八本書，由左到右列成表"><figcaption>一張照片，八本書由左到右列好，連譯者也分開了。</figcaption></figure>
+<p>它不是只把字認出來，而是看整張照片：哪一塊是書名、哪一塊是作者、哪一塊是出版社，再放進對的欄位。示範時它還提醒「有三本書名很像，有兩位作者只差一個字，登記時別弄混」。</p>
+
+<h2>B｜一疊照片，一張表</h2>
+<p>三箱書拍了 22 張，全選丟進去會跳出「一則訊息最多只能新增 20 個附件」。分兩次傳就好，第一則先把規矩講好：</p>
+<figure class="shot"><img src="files/day10/limit20.webp" width="1400" height="846" loading="lazy" alt="一則訊息最多只能新增 20 個附件"><figcaption>右下角的提示：一則訊息最多 20 個附件。</figcaption></figure>
+<div class="prompt pre">這是三箱二手書的書脊照，總共 22 張，這則先傳 20 張，剩下 2 張下一則傳。先不用做表，等我傳完。
+規矩先講好：
+1. 每一本書列一行，欄位是：照片檔名、書名、作者、譯者、出版社
+2. 看不清楚的字寫「看不清楚」，不要猜
+3. 被東西擋住、看不完整的書也要列出來，註明哪裡看不到<button>複製</button></div>
+<div class="prompt">這是最後 2 張。現在請把 22 張的書全部整理成一張表，做成可以下載的試算表。<button>複製</button></div>
+<p>為什麼要先講規矩？照片一多，它一次要看兩百本。沒講好，看不清楚的字它可能自己猜一個填上去。示範時它開了一張 Claude 的試算表，197 本一本一列；被價格貼紙擋住作者的那一本，它照規矩寫「看不清楚」。</p>
+<figure class="shot"><img src="files/day10/sheet197.webp" width="1400" height="846" loading="lazy" alt="22 張照片整理出 197 本書的試算表"><figcaption>左邊是對話，右邊是它做的試算表。</figcaption></figure>
+<figure class="shot"><img src="files/day10/unclear.webp" width="1400" height="846" loading="lazy" alt="被貼紙擋住、字被切到的書，它都寫在備註"><figcaption>看不清楚的，它照實寫出來。</figcaption></figure>
+<p>要帶走：按試算表右上角的 <b>分享</b> → <b>匯出</b> → <b>Excel</b>（也可以選 CSV，或送到 Google Sheets）。</p>
+<figure class="shot"><img src="files/day10/export.webp" width="1400" height="846" loading="lazy" alt="分享 → 匯出 → Excel"><figcaption>匯出成可以編輯的 .xlsx 試算表。</figcaption></figure>
+<div class="note"><b>沒有出現試算表？</b><br>示範用的是付費帳號。如果你的畫面沒有開出試算表，請它「列成表格」，再把表格複製貼到 Excel 或 Google 試算表就好。</div>
+
+<h2>C｜它哪裡會看錯</h2>
+<p><b>一大堆東西要算一共幾個，它只算得出大概。</b>整面書架拍一張問「總共有幾本」，它說大約 200 本，實際是 174 本。它自己也說書太密、算不準，建議每一層拍一張近照。照做，拍最上面那一層再問，它說 43 本，答對了。</p>
+<div class="pair"><figure><img src="files/day10/shelf200.webp" width="1400" height="846" loading="lazy" alt="整面書架：大約 200 本"><figcaption>整面書架：「大約 200 本」</figcaption></figure><figure><img src="files/day10/shelf43.webp" width="1400" height="846" loading="lazy" alt="最上面一層：43 本"><figcaption>拍近一層：43 本</figcaption></figure></div>
+<p><b>字太小、太遠、沒對焦，它會不確定。</b>版權頁遠遠拍一張問定價，它放大來看，說「看起來是 350 元，不過不太確定，也可能是 380 或 330」，請你拍特寫。拍近一點再問，它就很確定，連作者、譯者、出版日期都讀出來。</p>
+<div class="pair"><figure><img src="files/day10/far.webp" width="1400" height="846" loading="lazy" alt="遠遠拍：350 元，不過我不太確定"><figcaption>遠遠拍：不太確定</figcaption></figure><figure><img src="files/day10/near.webp" width="1400" height="846" loading="lazy" alt="拍近一點：新台幣 350 元"><figcaption>拍近一點：很確定</figcaption></figure></div>
+<p><b>長得很像的字最容易錯。</b>整理兩百本的時候，作者名字裡的「妤」，它有幾次看成「妍」。</p>
+<div class="three">
+  <div class="on"><b>拍近一點</b><span>字要夠大，一張照片不要塞太多</span></div>
+  <div class="on"><b>拍正一點</b><span>手機正對書背或紙面，光線平均、對好焦</span></div>
+  <div class="on"><b>分小塊問</b><span>東西很多就一層一層、一箱一箱問</span></div>
+</div>
+<p>要緊的金額、名字、數量，還是自己再看一眼。</p>
+
+<h2>D｜不只是認字：用照片對照清單</h2>
+<p>賣家給了一張手寫收購清單，寫了 64 本，箱子裡只有 62 本。把第一箱的七張書脊照（IMG_4101–4107）和兩張清單照片一起傳上去：</p>
+<div class="prompt pre">最後兩張是賣家寫的手寫收購清單，前面七張是第一箱的書脊照。幫我對一下：
+1. 清單上有、照片裡找不到的書是哪幾本？
+2. 照片裡有、清單上沒寫的書是哪幾本？<button>複製</button></div>
+<p>示範包裡的 IMG_4151、4152 是故意拍斜、沒對焦的清單。它沒有硬猜，只說看得出最上面一小段，請你「手機正對著紙、對焦在紙面中央、光線均勻」再拍一次。換成重拍的 IMG_4161、4162，它就讀出 64 本，找到少的兩本：《手沖的五個好習慣》和《借來的燈塔》。</p>
+<figure class="shot"><img src="files/day10/retake.webp" width="1400" height="846" loading="lazy" alt="看不清楚，請把兩張清單重拍清楚"><figcaption>照片太糊，它請你再拍一次。</figcaption></figure>
+<figure class="shot"><img src="files/day10/found.webp" width="1400" height="846" loading="lazy" alt="清單上有、照片裡找不到的書：2 本"><figcaption>重拍之後，找到少的那兩本。</figcaption></figure>
+<p>同一招也能拿來對照五金店的貨架、早餐店的手寫叫貨單、藥品的有效期限。</p>
+<div class="note"><b>照片裡有個人資料，先遮起來</b><br>客人的名字、電話、地址、身分證，傳上去之前先用相簿的編輯功能塗掉或裁掉。</div>
+
+<h3>加碼：看照片判斷書況？目前還不太行</h3>
+<p>我們也試了「九成新賣 150 元、有泛黃 100 元、書脊破損 50 元，看照片判斷每一本的書況定價」。它分得出乾淨和泛黃，可是第一箱裡三本書脊破損的書，它一本都沒看出來，說「沒有看到裂開、缺角或撕裂的書脊」。書況這種細節，還是自己看比較準；它適合先幫你把書名、作者打好。</p>
+<figure class="shot"><img src="files/day10/price.webp" width="1400" height="846" loading="lazy" alt="照書況定價的表"><figcaption>它判斷的書況：破損的書被看成九成新或泛黃。</figcaption></figure>
+
+<h2>今天的作業</h2>
+<h3>先拍一張就好</h3>
+<p>把店裡的一排商品、一疊單據，或一面書架拍一張，請它列成表。</p>
+<h3>再試一疊照片</h3>
+<p>拍十張以上，先講好欄位和「看不清楚就寫看不清楚」，再請它整理成一張表。</p>
+<p>過程中卡住了，就截圖問 Claude。</p>
+<p>下一課：Day 11，把做好的網頁放上網路，讓別人也能打開。</p>
+
+<h2>官方來源</h2>
+<ul class="src">
+  <li><a href="https://support.claude.com/en/articles/8241126-upload-files-to-claude">Claude 說明：上傳檔案的限制</a></li>
+  <li><a href="https://platform.claude.com/docs/en/build-with-claude/vision">Claude 文件：Vision（看圖的能力和限制）</a></li>
+  <li><a href="https://claude.com/pricing">Claude：方案與價格</a></li>
+</ul>
+<p class="src">資料查證日期：2026 年 11 月 22 日。App 的畫面是 2026 年 11 月 21 日用付費帳號、繁體中文介面實際操作的樣子。AI 工具更新很快，功能和價格請以官方網站為準。</p>
+
+<footer><a href="../">首頁</a><a href="../privacy.html">隱私權政策</a><span>© 2026 知識共享</span></footer>
+</div>
+<script>
+(function(){
+  document.querySelectorAll('.prompt button').forEach(function(b){b.onclick=function(){
+    var t=b.parentNode.firstChild.textContent.trim();
+    (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){b.textContent='已複製';setTimeout(function(){b.textContent='複製'},1500)},function(){});
+  }});
+  var saved; try{saved=localStorage.getItem('os')}catch(e){}
+  var os = saved || (/Win/i.test(navigator.platform||navigator.userAgent)?'win':'mac');
+  function set(o){os=o;try{localStorage.setItem('os',o)}catch(e){}
+    document.querySelectorAll('.tabs button').forEach(function(b){b.setAttribute('aria-selected',b.dataset.os===o)});
+    document.querySelectorAll('.osp').forEach(function(p){p.classList.toggle('on',p.dataset.os===o)});}
+  document.querySelectorAll('.tabs button').forEach(function(b){b.onclick=function(){set(b.dataset.os)}});
+  set(os);
+})();
+</script>
+</body></html>
