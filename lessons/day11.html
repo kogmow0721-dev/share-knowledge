@@ -1,0 +1,153 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="../apple-touch-icon.png"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Day 11：網站上公網，網址換成自己的名字｜知識共享</title>
+<meta name="description" content="github.io 的網址一大串，客人記不住？把 Day 7 做好的網頁換成自己的網域：網域、註冊商、DNS、主機是什麼；Cloudflare 和 GoDaddy 實際搜尋、放進購物車的價錢；DNS 要加的五筆記錄、GitHub 的 Custom domain、免費的 HTTPS 鎖頭、記得續約。">
+<link rel="stylesheet" href="../style.css">
+<style>
+.prompt{position:relative;margin:14px 0;padding:14px 18px;border-radius:12px;background:var(--card);border:1px dashed var(--line);font-size:16px;line-height:1.7;overflow-wrap:anywhere}
+.prompt::before{content:"你可以這樣問";display:block;font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--accent);margin-bottom:4px}
+.prompt.pre{white-space:pre-line}
+.prompt button,.copy{font:inherit;font-size:12px;line-height:1.7;white-space:nowrap;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.prompt button{position:absolute;top:10px;right:10px}
+.prompt button:hover,.copy:hover{border-color:var(--accent);color:var(--accent)}
+.three{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:18px 0}
+.three div{padding:16px 18px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
+.three b{display:block;margin-bottom:2px}
+.three span{color:var(--muted);font-size:14px}
+.shot{margin:18px 0 22px;position:relative}
+.shot img{display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--line);box-shadow:0 10px 32px rgba(0,0,0,.16);background:#fff}
+.shot figcaption{margin-top:8px;font-size:14px;color:var(--muted);text-align:center}
+.shot.mock figcaption::before{content:"示意畫面";display:inline-block;margin-right:8px;padding:1px 8px;border-radius:6px;background:#e4572e;color:#fff;font-size:12px;font-weight:700}
+.lesson ol.steps{counter-reset:s;list-style:none;padding-left:0}
+.lesson ol.steps>li{counter-increment:s;position:relative;padding-left:40px;margin:12px 0}
+.lesson ol.steps>li::before{content:counter(s);position:absolute;left:0;top:2px;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:800;color:#1a1205;background:var(--accent)}
+.tbl{width:100%;border-collapse:collapse;margin:14px 0;font-size:15px}
+.tbl th,.tbl td{padding:9px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.tbl th{font-size:13px;color:var(--muted);font-weight:700}
+.tbl code{font-size:14px}
+.scroll{overflow-x:auto}
+.bad{color:#d7263d;font-weight:700}.good{color:#1d8a4e;font-weight:700}
+</style></head><body><div class="wrap lesson">
+<header><a class="logo" href="../" style="color:inherit;text-decoration:none"><picture><source srcset="../mark-dark.svg" media="(prefers-color-scheme: dark)"><img class="mark" src="../mark.svg" alt=""></picture>知識共享 ShareKnowledge</a></header>
+<div class="crumb"><a href="../">首頁</a> / 課程</div>
+<span class="tag">Day 11</span>
+<h1>網站上公網：網址換成自己的名字</h1>
+<p class="lead">苗栗山上的山嵐營區，在 <a href="day07.html">Day 7</a> 做好了訂位網頁。老闆娘阿滿把網址印在名片上：<a href="https://kogmow0721-dev.github.io/shanlan-camp-page/">kogmow0721-dev.github.io/shanlan-camp-page</a>，一大串英文字母，客人少打一個字就找不到網頁。這一課把網址換成自己的名字，例如 <b>shanlancamp.com</b>。一年要付的只有網域，大約三百多塊台幣；放網頁的主機和網址前面的鎖頭都免費。不會的，就問 Claude。</p>
+
+<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/RDJkLXF1zGw?list=PLaAuH9dstA6Q" title="Day 11｜網站上公網：網址換成自己的名字" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<p class="src">看不到影片？<a href="https://www.youtube.com/watch?v=RDJkLXF1zGw&amp;list=PLaAuH9dstA6Q">到 YouTube 觀看</a>。每一段的一分鐘短片在 <a href="https://www.youtube.com/playlist?list=PLLv0kZ0Yf5bI">AI 實戰短片播放清單</a>。</p>
+
+<div class="note"><b>這一課沒有真的買網域</b><br>付款之前的每一步（搜尋、放進購物車、結帳頁、聯絡資料表單）都是 2026 年 11 月 22 日實際操作的畫面，停在付款那一步。買好網域之後才看得到的畫面（Cloudflare 的 DNS 設定、GitHub 檢查成功、HTTPS 打勾），是照官方文件做的<b>示意畫面</b>，圖片上和說明都有標示。按鈕名稱和欄位照官方文件，實際介面可能略有不同。</div>
+
+<h2>A｜網址是怎麼來的</h2>
+<p>先問 Claude。打開 Claude 的聊天，貼上你網頁的網址，問它：</p>
+<div class="prompt">我開露營區，訂位狀況放在這個網頁：https://kogmow0721-dev.github.io/shanlan-camp-page/ 網址太長，客人記不住。我想改成用自己的名字當網址，例如 shanlancamp.com。要怎麼做？一年要花多少錢？<button>複製</button></div>
+<figure class="shot"><img src="files/day11/claude_cost.webp" width="1400" height="846" loading="lazy" alt="Claude 上網查了價錢，列出幾家註冊商第一年和續約的價錢"><figcaption>它先上網查價錢，第一年和之後每年續約分開列。</figcaption></figure>
+<p>這裡有四個詞要先認識：</p>
+<div class="three">
+  <div><b>網域（domain）</b><span>網址的名字，例如 shanlancamp.com。像門牌，一年一年租。</span></div>
+  <div><b>註冊商（registrar）</b><span>賣網域的公司，例如 Cloudflare、GoDaddy、Namecheap。像辦門牌的地方。</span></div>
+  <div><b>DNS</b><span>網路的電話簿，寫明這個名字要連到哪一台電腦。</span></div>
+  <div><b>主機（hosting）</b><span>放網頁的電腦，像房子。這一課用 Day 7 的 GitHub Pages，免費。</span></div>
+</div>
+<figure class="shot"><img src="files/day11/claude_steps.webp" width="1400" height="846" loading="lazy" alt="Claude 列出的六個步驟"><figcaption>它列出的步驟：查名字、買下來、GitHub 填網域、註冊商加 DNS 記錄、等生效、打開 HTTPS。</figcaption></figure>
+
+<h2>B｜去哪裡買、一年多少錢</h2>
+<h3>Cloudflare：不用登入就能查</h3>
+<p>到 <a href="https://www.cloudflare.com/products/registrar/">Cloudflare 的網域頁</a>，在搜尋框打你想要的名字，結果會一邊打一邊出來。</p>
+<figure class="shot"><img src="files/day11/cf_search.webp" width="1400" height="788" loading="lazy" alt="Cloudflare 搜尋 shanlancamp 的結果"><figcaption>shanlancamp.com 還沒人註冊：第一年 US$11.17，續約一樣 US$11.17（2026 年 11 月 22 日）。</figcaption></figure>
+<p>要買就要登入（免費開帳號），流程是：</p>
+<ol class="steps">
+  <li>左邊選 <b>Domains</b> → <b>Registrations</b>，按右上角的 <b>Buy domain</b>。</li>
+  <li>搜尋名字，按 .com 那一格，它就放進購物車（右上角的 <b>Cart</b>）。</li>
+  <li>打開 Cart，按 <b>Continue to checkout</b>。</li>
+  <li>結帳頁：註冊年數（預設 1 year）、<b>Automatic renewal</b> 預設開著，沒有任何加購。</li>
+  <li><b>Registrant information</b> 按 Add，填註冊人的姓名、Email、電話、國家、地址。要填真的；Cloudflare 會把這些資料從公開的 WHOIS 查詢遮起來。</li>
+  <li>填好才能按 <b>Continue to payment</b> 付款。網域買了<b>不能退款</b>，拼字要先看清楚。</li>
+</ol>
+<figure class="shot"><img src="files/day11/cf_checkout.webp" width="1400" height="788" loading="lazy" alt="Cloudflare 結帳頁"><figcaption>Cloudflare 的結帳頁。示範停在這裡，沒有付款。帳號名稱已遮掉。</figcaption></figure>
+
+<h3>GoDaddy：第一年 NT$1？</h3>
+<p>同一個名字到 GoDaddy 搜尋，看到的是 NT$1，旁邊小字寫「僅限 3 年效期的第 1 年」。</p>
+<div class="scroll"><table class="tbl">
+<tr><th>步驟（2026 年 11 月 22 日實際看到的）</th><th>畫面上的金額</th></tr>
+<tr><td>搜尋 shanlancamp.com</td><td>NT$1（原價 NT$699），僅限 3 年效期的第 1 年</td></tr>
+<tr><td>按「加入購物車」</td><td>右上角馬上變 NT$1,399（三年一起買）</td></tr>
+<tr><td>下一頁「保護您的網域」</td><td>全方位網域保護 NT$24/月，<span class="bad">預設已勾選</span></td></tr>
+<tr><td>不改勾選，直接進購物車</td><td>小計 <b>NT$2,236</b>；2029 年 11 月續約：網域 NT$2,097、網域保護 NT$1,287</td></tr>
+</table></div>
+<figure class="shot"><img src="files/day11/gd_cart.webp" width="1400" height="788" loading="lazy" alt="GoDaddy 購物車小計 NT$2,236"><figcaption>GoDaddy 的購物車：三年網域 NT$1,399，加上預設勾好的網域保護，小計 NT$2,236。</figcaption></figure>
+<p>問 Claude 這些要不要買：</p>
+<div class="prompt">我看 GoDaddy 的 .com 寫第一年 NT$1，結帳時還預設幫我勾了「全方位網域保護 NT$24/月」，網站上也在賣 SSL 憑證。這些要買嗎？<button>複製</button></div>
+<figure class="shot"><img src="files/day11/claude_upsell.webp" width="1400" height="846" loading="lazy" alt="Claude 說只需要網域本身"><figcaption>它說只需要網域本身：網域保護一年 NT$288 比網域還貴，SSL 憑證 GitHub Pages 會免費提供。</figcaption></figure>
+<p><b>挑註冊商的兩個原則</b>：看<b>續約價</b>，不要只看第一年；預設勾好的加購先取消。想要 .tw 結尾的網域，可以找 PChome 或中華電信 HiNet；.com.tw 只開放有登記的公司行號，.tw 個人也能申請。</p>
+
+<h2>C｜把網域接到網頁</h2>
+<p>網域買好了，打網址還是打不開，因為網路還不知道這個名字要連到哪一台電腦。要做兩邊：<b>GitHub 寫你要用哪個網域</b>，<b>DNS 寫這個網域連到哪裡</b>。官方建議的順序是先 GitHub、再 DNS。</p>
+<div class="prompt">如果我在 Cloudflare 買，DNS 設定那一頁要怎麼填？有什麼要特別注意的地方嗎？<button>複製</button></div>
+<figure class="shot"><img src="files/day11/claude_dns.webp" width="1400" height="846" loading="lazy" alt="Claude 列出五筆 DNS 記錄"><figcaption>它列出五筆記錄，Proxy status 都是 DNS only。</figcaption></figure>
+
+<h3>1. GitHub：填 Custom domain</h3>
+<ol class="steps">
+  <li>打開放網頁的倉庫，按上面的 <b>Settings</b>。</li>
+  <li>左邊選 <b>Pages</b>。</li>
+  <li>往下到 <b>Custom domain</b>，填你的網域（例如 shanlancamp.com），按 <b>Save</b>。</li>
+</ol>
+<figure class="shot"><img src="files/day11/gh_custom.webp" width="1400" height="788" loading="lazy" alt="GitHub Pages 設定的 Custom domain 欄位"><figcaption>實際畫面。我們沒有買網域，這一格沒有填：填上沒有接好的網域，原本的 github.io 網頁會打不開。</figcaption></figure>
+
+<h3>2. Cloudflare：加五筆 DNS 記錄</h3>
+<p>點進你的網域，左邊選 <b>DNS</b> → <b>Records</b>，按 <b>Add record</b>，一筆一筆加：</p>
+<div class="scroll"><table class="tbl">
+<tr><th>Type</th><th>Name</th><th>Content（填這個）</th><th>Proxy status</th><th></th></tr>
+<tr><td>A</td><td>@</td><td><code>185.199.108.153</code></td><td>DNS only</td><td><button class="copy">複製</button></td></tr>
+<tr><td>A</td><td>@</td><td><code>185.199.109.153</code></td><td>DNS only</td><td><button class="copy">複製</button></td></tr>
+<tr><td>A</td><td>@</td><td><code>185.199.110.153</code></td><td>DNS only</td><td><button class="copy">複製</button></td></tr>
+<tr><td>A</td><td>@</td><td><code>185.199.111.153</code></td><td>DNS only</td><td><button class="copy">複製</button></td></tr>
+<tr><td>CNAME</td><td>www</td><td><code>你的帳號.github.io</code></td><td>DNS only</td><td></td></tr>
+</table></div>
+<p>@ 代表網域本身。CNAME 只填 <code>帳號.github.io</code>，不要加 https://，也不要加後面的倉庫名稱。四個 IP 是 <a href="https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site">GitHub 官方文件</a>寫的。</p>
+<figure class="shot mock"><img src="files/day11/sim_cf_add.webp" width="1400" height="788" loading="lazy" alt="示意畫面：Cloudflare Add record 表單"><figcaption>Add record：Type 選 A、Name 填 @、IPv4 address 填第一個 IP、Proxy status 關掉，按 Save。</figcaption></figure>
+<figure class="shot mock"><img src="files/day11/sim_cf_records.webp" width="1400" height="788" loading="lazy" alt="示意畫面：五筆 DNS 記錄"><figcaption>五筆都加好，雲朵都是灰色（DNS only）。</figcaption></figure>
+<p><b>雲朵要灰色。</b>Cloudflare 新增記錄時預設是橘色雲朵（Proxied）。橘色會讓 GitHub 確認不到網域指向它，常見的結果是 HTTPS 憑證一直申請不下來、Enforce HTTPS 不能勾。先用灰色，網站穩定後再研究要不要開。</p>
+
+<h3>3. 等它生效</h3>
+<p>DNS 生效通常幾十分鐘，最久 24 小時。回到 GitHub 的 Pages 設定，Custom domain 下面出現 <b>DNS check successful</b> 就接好了。</p>
+<figure class="shot mock"><img src="files/day11/sim_gh_ok.webp" width="1400" height="788" loading="lazy" alt="示意畫面：GitHub DNS check successful、Enforce HTTPS 已勾"><figcaption>照 GitHub 官方說明做的：DNS 檢查成功、Enforce HTTPS 打勾、上方網址變成自己的網域。</figcaption></figure>
+
+<h2>D｜鎖頭和續約</h2>
+<h3>鎖頭（HTTPS）不用買</h3>
+<p>網址前面的鎖頭代表 HTTPS 加密。註冊商會賣 SSL 憑證，但用 GitHub Pages 不用買：網域接好後，GitHub 會免費申請憑證（Let's Encrypt），在 Pages 設定把 <b>Enforce HTTPS</b> 打勾就好。剛接好時這一格可能還不能勾，憑證申請需要一點時間。</p>
+<h3>每年續約</h3>
+<p>網域不是買斷，是一年一年租。到期沒續約，網頁就打不開，名字還可能被別人買走。Cloudflare 結帳時 <b>Automatic renewal</b> 預設開著；信用卡換了，記得到帳戶裡更新。</p>
+<h3>驗證網域（建議做）</h3>
+<p>到 GitHub <b>帳號</b>的 Settings（不是倉庫的）→ <b>Pages</b> → <b>Add a domain</b>，照指示在 DNS 加一筆 TXT 記錄。驗證過，別人就不能把你的網域接到他自己的 GitHub 網頁。</p>
+<figure class="shot"><img src="files/day11/gh_verify.webp" width="1400" height="788" loading="lazy" alt="GitHub 帳號設定的 Verified domains"><figcaption>實際畫面：帳號 Settings → Pages → Verified domains。</figcaption></figure>
+
+<h2>今天的作業</h2>
+<h3>查名字</h3>
+<p>到 <a href="https://www.cloudflare.com/products/registrar/">Cloudflare 的網域頁</a>，搜尋你店名的網域，看第一年和續約的價錢。</p>
+<h3>問 Claude</h3>
+<p>貼上你的網址，問它換成自己的網域要怎麼做、一年多少錢。</p>
+<p>真的買了之後，DNS 檢查一直失敗、鎖頭勾不了，就截圖問 Claude。</p>
+<p>下一課：Day 12，把 Day 9 的文件問答，做成同事打開網址就能用的工具。</p>
+
+<h2>官方來源</h2>
+<ul class="src">
+  <li><a href="https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site">GitHub Docs：管理 GitHub Pages 的自訂網域（A 記錄的 IP、CNAME、先 GitHub 再 DNS）</a></li>
+  <li><a href="https://docs.github.com/en/pages/getting-started-with-github-pages/securing-your-github-pages-site-with-https">GitHub Docs：用 HTTPS 保護 GitHub Pages 網站（Enforce HTTPS）</a></li>
+  <li><a href="https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/verifying-your-custom-domain-for-github-pages">GitHub Docs：驗證 GitHub Pages 的自訂網域</a></li>
+  <li><a href="https://developers.cloudflare.com/registrar/get-started/register-domain/">Cloudflare Docs：用 Cloudflare Registrar 註冊網域</a></li>
+  <li><a href="https://developers.cloudflare.com/dns/manage-dns-records/how-to/create-dns-records/">Cloudflare Docs：新增 DNS 記錄</a></li>
+  <li><a href="https://developers.cloudflare.com/dns/proxy-status/">Cloudflare Docs：Proxy status（橘色和灰色雲朵）</a></li>
+</ul>
+<p class="src">資料查證日期：2026 年 11 月 22 日。Cloudflare、GoDaddy 的價錢是當天實際搜尋、放進購物車看到的，沒有付款。App 的畫面是用付費帳號、繁體中文介面實際操作的樣子。價格和介面請以官方網站為準。</p>
+
+<footer><a href="../">首頁</a><a href="../privacy.html">隱私權政策</a><span>© 2026 知識共享</span></footer>
+</div>
+<script>
+(function(){
+  function cp(t,b){(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){b.textContent='已複製';setTimeout(function(){b.textContent='複製'},1500)},function(){});}
+  document.querySelectorAll('.prompt button').forEach(function(b){b.onclick=function(){cp(b.parentNode.firstChild.textContent.trim(),b)}});
+  document.querySelectorAll('.tbl .copy').forEach(function(b){b.onclick=function(){cp(b.closest('tr').querySelector('code').textContent.trim(),b)}});
+})();
+</script>
+</body></html>
