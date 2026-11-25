@@ -1,0 +1,140 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="../apple-touch-icon.png"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Day 12：RAG 進階，做一個同事用網址就能問的問答工具｜知識共享</title>
+<meta name="description" content="老闆帶團不在，同事查不到公司規定？請 Claude Code 把三百份文件做成一個網頁問答工具：切塊建索引、先改寫問題再找資料、答案附檔名和原文、找不到就說不知道；API 金鑰放 Cloudflare Workers 的 Secret、通關密語、每天上限，一題實測約 US$0.001。">
+<link rel="stylesheet" href="../style.css">
+<style>
+.prompt{position:relative;margin:14px 0;padding:14px 18px;border-radius:12px;background:var(--card);border:1px dashed var(--line);font-size:16px;line-height:1.7;overflow-wrap:anywhere}
+.prompt::before{content:"你可以這樣問";display:block;font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--accent);margin-bottom:4px}
+.prompt.pre{white-space:pre-line}
+.prompt button,.copy{font:inherit;font-size:12px;line-height:1.7;white-space:nowrap;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.prompt button{position:absolute;top:10px;right:10px}
+.prompt button:hover,.copy:hover{border-color:var(--accent);color:var(--accent)}
+.three{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:18px 0}
+.three div{padding:16px 18px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
+.three b{display:block;margin-bottom:2px}
+.three span{color:var(--muted);font-size:14px}
+.shot{margin:18px 0 22px;position:relative}
+.shot img{display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--line);box-shadow:0 10px 32px rgba(0,0,0,.16);background:#fff}
+.shot figcaption{margin-top:8px;font-size:14px;color:var(--muted);text-align:center}
+.shot.mock figcaption::before{content:"示意畫面";display:inline-block;margin-right:8px;padding:1px 8px;border-radius:6px;background:#e4572e;color:#fff;font-size:12px;font-weight:700}
+.lesson ol.steps{counter-reset:s;list-style:none;padding-left:0}
+.lesson ol.steps>li{counter-increment:s;position:relative;padding-left:40px;margin:12px 0}
+.lesson ol.steps>li::before{content:counter(s);position:absolute;left:0;top:2px;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:800;color:#1a1205;background:var(--accent)}
+.tbl{width:100%;border-collapse:collapse;margin:14px 0;font-size:15px}
+.tbl th,.tbl td{padding:9px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.tbl th{font-size:13px;color:var(--muted);font-weight:700}
+.tbl code{font-size:14px}
+.scroll{overflow-x:auto}
+.bad{color:#d7263d;font-weight:700}.good{color:#1d8a4e;font-weight:700}
+</style></head><body><div class="wrap lesson">
+<header><a class="logo" href="../" style="color:inherit;text-decoration:none"><picture><source srcset="../mark-dark.svg" media="(prefers-color-scheme: dark)"><img class="mark" src="../mark.svg" alt=""></picture>知識共享 ShareKnowledge</a></header>
+<div class="crumb"><a href="../">首頁</a> / 課程</div>
+<span class="tag">Day 12</span>
+<h1>RAG 進階：做一個同事用網址就能問的問答工具</h1>
+<p class="lead">遠颺旅行社（虛構）的老闆又去北海道帶團了，客人在 LINE 上問「東京團可以帶行動電源嗎」「出發前三天取消要扣多少」。<a href="day09.html">Day 9</a> 做的專案知識庫在老闆的帳號裡，助理小安和其他同事打不開。這一課請 Claude Code 把 276 份文件做成一個網頁問答工具：同事用手機打開網址、輸入通關密語就能問，每個答案都附檔名和原文那一句，資料裡沒有就回答「資料裡沒有，請問老闆」。不會的，就問 Claude。</p>
+
+<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/4QFdEHcxQu0?list=PLaAuH9dstA6Q" title="Day 12｜RAG 進階：同事用網址就能問的問答工具" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<p class="src">看不到影片？<a href="https://www.youtube.com/watch?v=4QFdEHcxQu0&amp;list=PLaAuH9dstA6Q">到 YouTube 觀看</a>。每一段的一分鐘短片在 <a href="https://www.youtube.com/playlist?list=PLLv0kZ0Yf5bI">AI 實戰短片播放清單</a>。</p>
+
+<div class="note"><b>這一課要另外付 API 的錢</b><br>問答工具在背後替同事去問 Claude，用的是 Claude API，跟 Claude 的月費分開算：先在 Claude Console 儲值，用多少扣多少，最少 US$5，買了不能退。我們實測五題，平均一題約 <b>US$0.001</b>（兩次 Haiku 5.5 呼叫：改寫問題＋回答）。示範用的 Console 帳號沒有儲值，買點數的畫面停在付款前；實際問答用的是另一把已經有點數的金鑰。旅行社、航空公司、行程和規定全部是假的，真的規定請看各家官網。</div>
+
+<div class="three">
+  <div><b>你需要</b><span>Claude 付費方案（用 Claude Code）、Claude Console 帳號（API，另外儲值）、Cloudflare 免費帳號（<a href="day11.html">Day 11</a> 開過）。</span></div>
+  <div><b>做出來的東西</b><span>一個網址，同事用手機打開、輸入通關密語就能問公司文件，答案附檔名和原文。</span></div>
+  <div><b>一題多少錢</b><span>實測約 US$0.001（約台幣 3 分錢）。工具自己限制每天最多 100 題。</span></div>
+</div>
+
+<h2>A｜先畫藍圖</h2>
+<p>聊天版的專案綁在一個人的帳號上。要讓每個同事都能問，就要做成一個網頁，大家打開同一個網址；網頁在背後用 API 金鑰去問 Claude（<a href="day07.html">Day 7</a> 講過 API 和金鑰）。</p>
+<ol class="steps">
+  <li>打開電腦版 Claude，切到上方的 <b>Code</b> 分頁。</li>
+  <li>輸入框下面點資料夾那一格 → <b>開啟資料夾…</b>，選放文件的那個資料夾。第一次會問「要信任此工作區嗎？」，按 <b>信任工作區</b>。</li>
+  <li>把輸入框右下角的模式改成 <b>規劃</b>（<a href="day08.html">Day 8</a> 教過：先寫計畫給你看，你說好才動手）。</li>
+  <li>把 API 金鑰存成資料夾裡的 <code>.env</code> 檔案（一行 <code>ANTHROPIC_API_KEY=你的金鑰</code>），再貼上下面這段需求。</li>
+</ol>
+<figure class="shot"><img src="files/day12/plan_mode.webp" width="1400" height="846" loading="lazy" alt="Code 分頁右下角的模式選單，選規劃"><figcaption>輸入框右下角的模式選單：自動、手動、接受編輯、規劃。</figcaption></figure>
+<div class="prompt pre">我們是六個人的小旅行社。「共用資料」資料夾裡有 276 份 Word 和 PDF：航空公司行李規定、各國入境須知、保險條款、行程表、退費規定、內部作業說明。客人每天在 LINE 問問題，老闆帶團不在的時候，同事都查不到。
+
+我想要一個網頁問答工具：同事用手機打開網址就能問。答案只能根據這些文件，每個答案都要附上檔名和原文那一句；資料裡找不到，就回答「資料裡沒有，請問老闆」。
+
+之後要放上 Cloudflare Workers 的免費方案。Claude 的 API 金鑰我放在 .env 裡了，不要把金鑰印出來，也不要放進網頁。請用最簡單、最省錢的做法，先規劃給我看。<button>複製</button></div>
+<figure class="shot"><img src="files/day12/plan.webp" width="1400" height="846" loading="lazy" alt="Claude 寫出的計畫"><figcaption>它自己發現資料夾裡有新舊兩版退費規定互相矛盾，也決定不用向量資料庫，先找出相關段落再交給 Claude。</figcaption></figure>
+<p>計畫最後它問了三件事，我們這樣回：</p>
+<div class="prompt pre">1. 存取保護用通關密語，加每日上限 100 題。同事不用另外開帳號。
+2. 會議記錄要納入，但規定有新舊版時，以最新的為準。
+3. 答案要標註依據的是哪一版、哪一天起生效。
+先在我的電腦上做好、測好，部署之前先停下來問我。<button>複製</button></div>
+<p>它的計畫就是 RAG（檢索增強生成）的三個步驟：</p>
+<div class="three">
+  <div><b>1 切塊、建索引</b><span>把每份文件照標題和表格切成小段（這次 1,483 段），每段記下檔名、章節、生效日，排成一份目錄（索引）。</span></div>
+  <div><b>2 找資料（檢索）</b><span>同事問問題，先從目錄挑出最相關的幾段。</span></div>
+  <div><b>3 照資料回答</b><span>只把這幾段交給 Claude，請它照著寫答案，並抄出依據的原文。</span></div>
+</div>
+
+<h2>B｜拆成卡片、先找再答</h2>
+<p>它做完會自己出題測試（這次 28 題全過），也會檢查網頁和程式裡有沒有金鑰。先在自己電腦上試問，別急著上網。</p>
+<p>我們試問「東京團可以帶行動電源嗎？」，它卻回「資料裡沒有」。原因是<b>用詞對不上</b>：同事說行動電源，文件寫的是「備用鋰電池」，照字找就找不到。它第一次的解法是同義詞表，但同事的說法補不完，所以再問：</p>
+<div class="prompt">同義詞表要我一直自己補，同事的說法那麼多，補不完。有沒有不用手動維護的做法？請用最便宜的方式改好，用剛剛那兩題，再加「小朋友坐飛機要買位子嗎？」「去東京要辦簽證嗎？」測試。還是先不要部署。<button>複製</button></div>
+<figure class="shot"><img src="files/day12/rewrite.webp" width="1400" height="846" loading="lazy" alt="Claude 改成先改寫問題再檢索"><figcaption>改成每一題先請 Claude（Haiku）把口語問題改寫成文件用的詞，再去找。每題多一次很小的呼叫。</figcaption></figure>
+<p>照字找（關鍵字）便宜但會漏；照意思找（向量搜尋，要另外開 Voyage AI 這類服務）比較準但要多一個服務。這一課用中間的做法：<b>先改寫，再照字找</b>，不用多開服務。資料裡真的沒有的（例如小朋友座位），它還是回「資料裡沒有」。</p>
+
+<h2>C｜答案附原文</h2>
+<figure class="shot"><img src="files/day12/phone_power.webp" width="1400" height="788" loading="lazy" alt="手機打開問答工具，問東京團可以帶行動電源嗎"><figcaption>線上版用手機問：先顯示「正在翻公司文件」，幾秒後列出兩家航空的規定。</figcaption></figure>
+<figure class="shot"><img src="files/day12/phone_sources.webp" width="1400" height="788" loading="lazy" alt="答案下方的依據：檔名和原文"><figcaption>往下滑是「依據」：每一個說法都附檔名、版本和原文那一句。</figcaption></figure>
+<p>原文怎麼來：Claude 寫答案時要指出用了哪一段、抄出哪一句；程式再拿這一句回文件裡逐字比對，對不上就丟掉，沒有任何對得上的原文，就改回「資料裡沒有，請問老闆」。</p>
+<figure class="shot"><img src="files/day12/phone_refund.webp" width="1400" height="788" loading="lazy" alt="出發前三天取消扣 50%，依修訂版"><figcaption>新舊兩版退費規定：它用 2026 年 7 月 1 日起生效的修訂版，因為新版第一行寫了「舊版同時廢止」。</figcaption></figure>
+<figure class="shot"><img src="files/day12/phone_iceland.webp" width="1400" height="788" loading="lazy" alt="冰島極光團：資料裡沒有，請問老闆"><figcaption>資料裡沒有的冰島極光團，不會編一個答案。</figcaption></figure>
+<p><b>要留意：</b>比較好幾家的答案，偶爾會把兩家的數字寫混（Claude Code 自己回報的限制）。原文是對的，所以同事要以下方附的原文為準。</p>
+
+<h2>D｜放上網、設上限</h2>
+<h3>1. 申請 API 金鑰</h3>
+<ol class="steps">
+  <li>到 <a href="https://platform.claude.com/">Claude Console</a>（開發者用的網站，用同一個 Claude 帳號登入）。第一次進去選 <b>個人</b>。</li>
+  <li>儲值頁：最少 US$5，可以用卡片、Apple Pay、Google Pay。<b>自動儲值先不要開</b>，點數用完就停，帳單不會失控。</li>
+  <li>左邊選 <b>金鑰</b> → 右上角 <b>建立金鑰</b>。名字取認得出來的，範圍選一個這個工具專用的工作區（設定 → 工作區 → 建立工作區），之後帳單看得出這個工具花了多少。</li>
+  <li>金鑰只顯示這一次，馬上存好。沒有儲值的話，這把金鑰不能用。</li>
+</ol>
+<figure class="shot"><img src="files/day12/credits.webp" width="1400" height="788" loading="lazy" alt="Claude Console 購買額度頁"><figcaption>實際畫面（2026 年 11 月 23 日）：最少 US$5，我們按「暫時略過」，沒有付款。</figcaption></figure>
+<figure class="shot"><img src="files/day12/key_shown.webp" width="1400" height="788" loading="lazy" alt="建立好的 API 金鑰（已打碼）"><figcaption>金鑰只會顯示這一次（畫面已打碼）。</figcaption></figure>
+<h3>2. 金鑰放後台的 Secret，不放網頁</h3>
+<p>網頁的原始碼誰都看得到，金鑰放在網頁裡就像把信用卡貼在店門口。這個工具把網頁和「替網頁去問 Claude 的程式」都放在 <b>Cloudflare Workers</b>（Cloudflare 的後台，免費方案每天 10 萬次請求）；金鑰存在 Workers 的 <b>Secret</b>，存進去之後連你自己在後台都看不到內容。網頁上只有一格通關密語。</p>
+<p>跟 Claude Code 說「開始部署」，第一次會跳出 Cloudflare 的授權頁，登入後按 <b>Authorize</b>。通關密語它不代設，要你自己在終端機輸入：</p>
+<div class="scroll"><table class="tbl"><tr><td><code>npx wrangler secret put APP_PASSPHRASE</code></td><td><button class="copy">複製</button></td></tr></table></div>
+<figure class="shot"><img src="files/day12/deployed.webp" width="1400" height="846" loading="lazy" alt="部署完成，網址出現"><figcaption>部署完成，網址是 <code>工具名稱.帳號.workers.dev</code>。</figcaption></figure>
+<figure class="shot"><img src="files/day12/phone_login.webp" width="1400" height="788" loading="lazy" alt="通關密語畫面和首頁"><figcaption>密語打錯進不去；右上角顯示今天還能問幾題（每天 100 題，同一個地方打錯 10 次就鎖到隔天）。</figcaption></figure>
+<h3>3. 文件更新了怎麼辦</h3>
+<p>新文件放進資料夾對應的子資料夾，在終端機跑一行，索引會重建、網站會再上線，大約一分鐘：</p>
+<div class="scroll"><table class="tbl"><tr><td><code>cd 你的資料夾 &amp;&amp; npm run update</code></td><td><button class="copy">複製</button></td></tr></table></div>
+<p>改規定時：新版檔名加 <code>_修訂</code>，文件第一行寫「本規定自 某年某月某日 起實施，舊版同時廢止。」舊版會自動標成已廢止，答案會註明依哪一版。</p>
+<p>這一課的示範網站拍完就關掉了，不會一直花錢。</p>
+
+<h2>今天的作業</h2>
+<h3>先在自己的電腦做</h3>
+<p>拿十幾份工作上常查的文件，請 Claude Code 照這一課做一個只在自己電腦上用的版本。</p>
+<h3>問三題考它</h3>
+<p>一題資料裡有的、一題換個說法問的、一題資料裡沒有的，看它附的原文對不對。</p>
+<h3>要放上網再儲值</h3>
+<p>小額儲值、不開自動儲值，金鑰只放在 Secret。卡住了，就把畫面截圖問 Claude。</p>
+<p>下一課：Day 13，一千張商品照要去背、裁成一樣大，交給 Claude Code 和 OpenCV。</p>
+
+<h2>官方來源</h2>
+<ul class="src">
+  <li><a href="https://platform.claude.com/docs/en/about-claude/pricing">Claude 官方價目表（Haiku 5.5 每百萬 token 輸入 US$0.10、輸出 US$0.50）</a></li>
+  <li><a href="https://support.claude.com/en/articles/8977456-how-do-i-pay-for-my-api-usage">Claude Help Center：怎麼支付 API 費用（預付點數、一年到期、不退款）</a></li>
+  <li><a href="https://platform.claude.com/docs/en/api/rate-limits">Claude Docs：速率限制與花費上限</a></li>
+  <li><a href="https://developers.cloudflare.com/workers/platform/limits/">Cloudflare Docs：Workers 免費方案的限制</a></li>
+  <li><a href="https://developers.cloudflare.com/workers/configuration/secrets/">Cloudflare Docs：Workers 的 Secret</a></li>
+  <li><a href="https://www.anthropic.com/news/contextual-retrieval">Anthropic：Contextual Retrieval（切塊前加說明，降低找錯的比例）</a></li>
+</ul>
+<p class="src">資料查證日期：2026 年 11 月 23 日。一題的費用是當天實測五題的平均。App 的畫面是用付費帳號、繁體中文介面實際操作的樣子；Console 的畫面是新開的帳號，沒有付款。價格和介面請以官方網站為準。</p>
+
+<footer><a href="../">首頁</a><a href="../privacy.html">隱私權政策</a><span>© 2026 知識共享</span></footer>
+</div>
+<script>
+(function(){
+  function cp(t,b){(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){b.textContent='已複製';setTimeout(function(){b.textContent='複製'},1500)},function(){});}
+  document.querySelectorAll('.prompt button').forEach(function(b){b.onclick=function(){cp(b.parentNode.firstChild.textContent.trim(),b)}});
+  document.querySelectorAll('.tbl .copy').forEach(function(b){b.onclick=function(){cp(b.closest('tr').querySelector('code').textContent.trim(),b)}});
+})();
+</script>
+</body></html>
