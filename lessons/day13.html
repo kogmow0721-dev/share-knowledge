@@ -1,0 +1,134 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="../apple-touch-icon.png"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Day 13：視覺進階，一千張商品照交給 Claude Code 和 OpenCV｜知識共享</title>
+<meta name="description" content="網拍一千張商品照要去背、換白底、裁成正方形、照商品分資料夾？請 Claude Code 寫一支程式在自己的電腦上批次處理：OpenCV 是什麼、去背模型 rembg、先試十張、縮圖總覽省用量、拍糊的自動挑出來。">
+<link rel="stylesheet" href="../style.css">
+<style>
+.prompt{position:relative;margin:14px 0;padding:14px 18px;border-radius:12px;background:var(--card);border:1px dashed var(--line);font-size:16px;line-height:1.7;overflow-wrap:anywhere}
+.prompt::before{content:"你可以這樣問";display:block;font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--accent);margin-bottom:4px}
+.prompt.pre{white-space:pre-line}
+.prompt button,.copy{font:inherit;font-size:12px;line-height:1.7;white-space:nowrap;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.prompt button{position:absolute;top:10px;right:10px}
+.prompt button:hover,.copy:hover{border-color:var(--accent);color:var(--accent)}
+.three{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:18px 0}
+.three div{padding:16px 18px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
+.three b{display:block;margin-bottom:2px}
+.three span{color:var(--muted);font-size:14px}
+.shot{margin:18px 0 22px;position:relative}
+.shot img{display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--line);box-shadow:0 10px 32px rgba(0,0,0,.16);background:#fff}
+.shot figcaption{margin-top:8px;font-size:14px;color:var(--muted);text-align:center}
+.shot.mock figcaption::before{content:"示意畫面";display:inline-block;margin-right:8px;padding:1px 8px;border-radius:6px;background:#e4572e;color:#fff;font-size:12px;font-weight:700}
+.lesson ol.steps{counter-reset:s;list-style:none;padding-left:0}
+.lesson ol.steps>li{counter-increment:s;position:relative;padding-left:40px;margin:12px 0}
+.lesson ol.steps>li::before{content:counter(s);position:absolute;left:0;top:2px;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:800;color:#1a1205;background:var(--accent)}
+.tbl{width:100%;border-collapse:collapse;margin:14px 0;font-size:15px}
+.tbl th,.tbl td{padding:9px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.tbl th{font-size:13px;color:var(--muted);font-weight:700}
+.tbl code{font-size:14px}
+.scroll{overflow-x:auto}
+.bad{color:#d7263d;font-weight:700}.good{color:#1d8a4e;font-weight:700}
+</style></head><body><div class="wrap lesson">
+<header><a class="logo" href="../" style="color:inherit;text-decoration:none"><picture><source srcset="../mark-dark.svg" media="(prefers-color-scheme: dark)"><img class="mark" src="../mark.svg" alt=""></picture>知識共享 ShareKnowledge</a></header>
+<div class="crumb"><a href="../">首頁</a> / 課程</div>
+<span class="tag">Day 13</span>
+<h1>視覺進階：一千張商品照，交給 Claude Code 和 OpenCV</h1>
+<p class="lead">禾木手作（虛構）的阿禾冬天要上 24 樣新商品，每樣用手機拍了四十張左右，一共 1,000 張。網拍的商品圖最好是白底、正方形、商品在正中間，可是這些照片的背景有木頭桌、手機、遙控器，有的偏黃、有的拍糊了。用修圖 App 一張一張做，一張兩分鐘，一千張就是三十幾個小時。這一課請 Claude Code 寫一支程式，在自己的電腦上一次處理一千張：去背換白底、裁成 1000×1000、照商品分資料夾，拍糊的挑出來。不會的，就問 Claude。</p>
+
+<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/5Un1OcAmqHU?list=PLaAuH9dstA6Q" title="Day 13｜視覺進階：一千張商品照，交給 Claude Code 和 OpenCV" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<p class="src">看不到影片？<a href="https://www.youtube.com/watch?v=5Un1OcAmqHU&amp;list=PLaAuH9dstA6Q">到 YouTube 觀看</a>。三十秒精華在 <a href="https://www.youtube.com/playlist?list=PLLv0kZ0Yf5bI">AI 實戰短片播放清單</a>。</p>
+
+<div class="three">
+  <div><b>你需要</b><span>Claude 付費方案（用 Claude Code，<a href="day04.html">Day 4</a> 教過）、電腦版 Claude。程式和模型都免費。</span></div>
+  <div><b>做出來的東西</b><span>每個商品一個資料夾，裡面是 1000×1000、白底、商品置中的照片；拍糊的另外放一個資料夾。原始照片不動。</span></div>
+  <div><b>為什麼不叫 Claude 一張一張看</b><span>每張照片都要算成上千個 token，一千張就是上百萬個，用量很快見底，也很慢。固定的動作交給程式，在自己的電腦上跑，不算 Claude 的用量。</span></div>
+</div>
+
+<h2>A｜為什麼要寫程式？OpenCV 是什麼</h2>
+<p><a href="day10.html">Day 10</a> 請 Claude 看照片，它連書脊上的字都看得懂。可是每張照片對 Claude 來說都要換算成 token：照片會切成 28×28 像素的小格子，一格算一個 token，一張手機照片大約上千個。一千張就是上百萬個 token，訂閱方案的用量很快見底。</p>
+<p>去背、裁切、判斷清不清楚，這種每張都一樣的動作，交給程式就好。最常用的工具是 <b>OpenCV</b>（Open Source Computer Vision Library），一套免費、開放原始碼的影像處理工具箱：讀照片、縮放、裁切、找輪廓、算清晰度都有現成的功能，用 Python 呼叫。你不用學怎麼寫，請 Claude Code 寫；你要做的是把需求說清楚，再檢查結果。</p>
+
+<h2>B｜先試十張</h2>
+<ol class="steps">
+  <li>把照片和商品清單放在同一個資料夾，例如 <code>禾木手作/商品照</code>、<code>禾木手作/商品清單.txt</code>（清單只要商品名稱就好）。</li>
+  <li>打開電腦版 Claude，切到上方的 <b>Code</b> 分頁，輸入框下面點資料夾那一格 → <b>開啟資料夾…</b>，選 <code>禾木手作</code>，按 <b>信任工作區</b>。</li>
+  <li>貼上下面這段需求。</li>
+</ol>
+<figure class="shot"><img src="files/day13/prompt.webp" width="1400" height="846" loading="lazy" alt="在 Code 分頁輸入需求"><figcaption>實際畫面（2026 年 11 月 24 日，付費帳號、手動模式、Sonnet 5.5）。</figcaption></figure>
+<div class="prompt pre">「商品照」資料夾裡有 1000 張商品照，都是我在家裡用手機拍的，要拿去網拍上架。請幫我：
+1. 去背，換成純白背景
+2. 裁成 1000×1000 的正方形，商品放正中間，四邊留差不多的空白
+3. 同一個商品的照片放進同一個資料夾，資料夾用「商品清單.txt」裡的商品名稱
+4. 拍糊的照片挑出來放進「要重拍」，不用處理
+不要一張一張用眼睛看，請寫一支程式來處理（可以用 OpenCV）。原始照片不要動。先拿 10 張試做給我看，我說可以再全部跑。<button>複製</button></div>
+<p>它要在你的電腦上跑程式之前，會跳出「是否允許 Claude 執行此指令？」，看一下說明寫的是什麼，按 <b>允許一次</b>。</p>
+<figure class="shot"><img src="files/day13/ask.webp" width="1400" height="846" loading="lazy" alt="是否允許 Claude 執行此指令"><figcaption>它先列工作清單，要跑十張試做時先問你。</figcaption></figure>
+<p>第一次試做的報告分成三項：</p>
+<div class="scroll"><table class="tbl">
+<tr><th>項目</th><th>結果</th><th>原因</th></tr>
+<tr><td>挑出拍糊的</td><td class="good">可用</td><td>程式替每張照片的清晰度打分，一千張裡抓到 12 張明顯模糊</td></tr>
+<tr><td>去背、裁切</td><td class="bad">不合格</td><td>只用 OpenCV 的去背功能（GrabCut）：影子留下來、旁邊的雜物一起切進去、白杯子放在白桌上分不開</td></tr>
+<tr><td>分資料夾</td><td class="bad">做不到</td><td>清單只有名稱和價格，沒說哪張是哪個商品；它不亂猜，先反問</td></tr>
+</table></div>
+<figure class="shot"><img src="files/day13/trial1.webp" width="1400" height="846" loading="lazy" alt="第一次試做的報告"><figcaption>試做的好處：問題在十張的時候就看到了，不是跑完一千張才發現。</figcaption></figure>
+<p>它建議改用專門的去背模型 <b>rembg</b>，模型要從網路下載（這次用的 u2net 大約 170 MB），所以先問你要不要下載。</p>
+
+<h2>C｜補上它缺的資訊</h2>
+<p>只有你知道的事，它問了就要補上。我們這樣回：</p>
+<div class="prompt pre">可以，下載 rembg。
+分組：我是照清單的順序拍的，一樣拍完才換下一樣，每樣拍四十張左右。最後四十張是補拍的，順序是亂的。每一樣只要看一張就認得出是什麼，你可以每組挑一張看，對照清單取名。
+還有，IMG_4013 手震也糊了，可是沒有被挑出來，手震的也要挑。<button>複製</button></div>
+<div class="three">
+  <div><b>去背：rembg</b><span>免費的去背模型，專門學過「照片裡哪裡是主角」。下載一次存在自己的電腦上，照片不用上傳。分工是 rembg 切出商品，OpenCV 裁正方形、置中、算清晰度。</span></div>
+  <div><b>手震：只看商品的邊</b><span>背景本來就有點模糊，整張一起算分不出手震；改成只看商品邊緣清不清楚。</span></div>
+  <div><b>分組：縮圖總覽</b><span>程式把一千張縮成小圖，排成幾張總覽；Claude 只看這幾張就認出每樣商品從幾號拍到幾號，補拍的再用程式比對歸回去。</span></div>
+</div>
+<div class="note"><b>注意模型的授權</b><br>rembg 本身是 MIT 授權、免費。它裡面有好幾種模型可以選，有的模型拿來做生意要另外付授權費（例如 rembg 現在的預設模型 bria-rmbg）。這次 Claude Code 用的是 u2net 和 isnet。你自己用的時候，請它先查清楚模型的授權。</div>
+<figure class="shot"><img src="files/day13/trial2.webp" width="1400" height="846" loading="lazy" alt="第二次試做"><figcaption>它沒有一張一張看，而是讓程式做縮圖總覽，自己只看總覽。</figcaption></figure>
+<figure class="shot"><img src="files/day13/good.webp" width="1400" height="846" loading="lazy" alt="原始照片和處理後的對照"><figcaption>左邊原始照片，右邊處理後：1000×1000、白底、商品置中。</figcaption></figure>
+<figure class="shot"><img src="files/day13/bad.webp" width="1400" height="846" loading="lazy" alt="多切到旁邊東西的例子"><figcaption>有四張多切到旁邊的東西：蠟燭連著後面的手把、盤子連著底下的白紙。</figcaption></figure>
+<p>第二次找到 27 張要重拍（12 張沒對焦、15 張手震），它也說輕微的手震可能漏掉；分組不確定的交界（兩種陶盤、兩種湯匙、兩種陶杯）它自己列出來。最後我們回：</p>
+<div class="prompt">先改進那 4 張。改好之後直接全部 1000 張跑完，最後給我一份簡短的報告。<button>複製</button></div>
+
+<h2>D｜一千張跑完</h2>
+<p>跑完它交了一份報告：</p>
+<div class="scroll"><table class="tbl">
+<tr><th>項目</th><th>結果</th></tr>
+<tr><td>成品</td><td>973 張，1000×1000、純白背景、商品置中，存在「商品照_處理後」</td></tr>
+<tr><td>分類</td><td>照清單分成 24 個商品資料夾，每個 36～45 張；最後的補拍逐張歸回對應商品</td></tr>
+<tr><td>拍糊的</td><td>27 張另外放進「要重拍」，沒有處理</td></tr>
+<tr><td>原始照片</td><td>還是 1,000 張，沒有被改過</td></tr>
+</table></div>
+<figure class="shot"><img src="files/day13/report.webp" width="1400" height="846" loading="lazy" alt="處理報告"><figcaption>它也把問題講清楚：隨機抽 24 張，約四分之一到三分之一旁邊的東西沒切掉；分組交界和輕微手震可能有漏。</figcaption></figure>
+<p>一千張不可能一張一張點開看，所以再請它做檢查用的總覽：</p>
+<div class="prompt">每個商品資料夾各做一張縮圖總覽，放進「檢查用總覽」資料夾，讓我一眼看完。你懷疑雜物沒切乾淨、或是邊緣被切掉的，在總覽上用紅框標出來。<button>複製</button></div>
+<figure class="shot"><img src="files/day13/sheet_plate.webp" width="1400" height="846" loading="lazy" alt="白釉陶盤的檢查用總覽，紅框標出有問題的照片"><figcaption>一個商品一張總覽：旁邊的陶環、藍色杯子沒去掉的都被紅框圈起來。</figcaption></figure>
+<figure class="shot"><img src="files/day13/sheet_candle.webp" width="1400" height="846" loading="lazy" alt="柚子蠟燭的檢查用總覽"><figcaption>玻璃杯被切破的有框到；可是蠟燭旁邊連著手把的那幾張沒有被框到。</figcaption></figure>
+<figure class="shot"><img src="files/day13/review.webp" width="1400" height="846" loading="lazy" alt="紅框的說明和準確度"><figcaption>它自己也說：紅框是自動判斷，會誤報也會漏掉，沒框的也要掃一眼。</figcaption></figure>
+<p>這一課的分工：一千張的固定動作讓程式做；要判斷的事，Claude 只看幾張總覽；最後一眼，由你來看。有問題的照片，可以請它換個方式再去背一次，或列成名單，決定哪些要再拍。</p>
+
+<h2>今天的作業</h2>
+<h3>拿二十張自己的照片</h3>
+<p>商品照、收據、活動照都可以，先放進一個新的資料夾。</p>
+<h3>說清楚要什麼</h3>
+<p>要什麼尺寸、什麼背景、檔名怎麼取、怎麼分資料夾，都寫清楚，再加一句「先試五張」。</p>
+<h3>每個資料夾抽幾張看</h3>
+<p>分錯的、切壞的，把檔名告訴它，請它改。卡住了，就把畫面截圖問 Claude。</p>
+<p>下一課：Day 14，讓 Claude 自己操作瀏覽器，把這 24 樣新品一樣一樣上架到網店。（影片結尾預告的「一句『上線』技能包」改到 Day 17。）</p>
+
+<h2>官方來源</h2>
+<ul class="src">
+  <li><a href="https://opencv.org/">OpenCV 官方網站（Open Source Computer Vision Library）</a></li>
+  <li><a href="https://github.com/danielgatis/rembg">rembg（GitHub，MIT 授權；各模型的授權另計）</a></li>
+  <li><a href="https://platform.claude.com/docs/en/build-with-claude/vision">Claude Docs：Vision（照片怎麼換算成 token）</a></li>
+</ul>
+<p class="src">資料查證日期：2026 年 11 月 24 日。禾木手作、商品和照片都是示範用的假資料。App 的畫面是用付費帳號、繁體中文介面實際操作的樣子。介面和模型授權請以官方網站為準。</p>
+
+<footer><a href="../">首頁</a><a href="../privacy.html">隱私權政策</a><span>© 2026 知識共享</span></footer>
+</div>
+<script>
+(function(){
+  function cp(t,b){(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){b.textContent='已複製';setTimeout(function(){b.textContent='複製'},1500)},function(){});}
+  document.querySelectorAll('.prompt button').forEach(function(b){b.onclick=function(){cp(b.parentNode.firstChild.textContent.trim(),b)}});
+  document.querySelectorAll('.tbl .copy').forEach(function(b){b.onclick=function(){cp(b.closest('tr').querySelector('code').textContent.trim(),b)}});
+})();
+</script>
+</body></html>
