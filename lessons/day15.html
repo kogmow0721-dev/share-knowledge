@@ -1,0 +1,108 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="../apple-touch-icon.png"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Day 15：店家自己的扭蛋機，一張卡只能抽一次｜知識共享</title>
+<meta name="description" content="免費抽獎網頁再載入一次就能一直抽？請 Claude Code 做一台店家自己的扭蛋機：規劃模式先問清楚、抽獎放在後端、300 張一次性抽獎卡、頭獎每天上限、店員核銷頁、放上 Cloudflare 免費方案。">
+<link rel="stylesheet" href="../style.css">
+<style>
+.prompt{position:relative;margin:14px 0;padding:14px 18px;border-radius:12px;background:var(--card);border:1px dashed var(--line);font-size:16px;line-height:1.7;overflow-wrap:anywhere}
+.prompt::before{content:"你可以這樣問";display:block;font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--accent);margin-bottom:4px}
+.prompt.pre{white-space:pre-line}
+.prompt button,.copy{font:inherit;font-size:12px;line-height:1.7;white-space:nowrap;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.prompt button{position:absolute;top:10px;right:10px}
+.prompt button:hover,.copy:hover{border-color:var(--accent);color:var(--accent)}
+.three{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:18px 0}
+.three div{padding:16px 18px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
+.three b{display:block;margin-bottom:2px}
+.three span{color:var(--muted);font-size:14px}
+.shot{margin:18px 0 22px;position:relative}
+.shot img{display:block;width:100%;height:auto;border-radius:14px;border:1px solid var(--line);box-shadow:0 10px 32px rgba(0,0,0,.16);background:#fff}
+.shot figcaption{margin-top:8px;font-size:14px;color:var(--muted);text-align:center}
+.shot.mock figcaption::before{content:"示意畫面";display:inline-block;margin-right:8px;padding:1px 8px;border-radius:6px;background:#e4572e;color:#fff;font-size:12px;font-weight:700}
+.lesson ol.steps{counter-reset:s;list-style:none;padding-left:0}
+.lesson ol.steps>li{counter-increment:s;position:relative;padding-left:40px;margin:12px 0}
+.lesson ol.steps>li::before{content:counter(s);position:absolute;left:0;top:2px;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:800;color:#1a1205;background:var(--accent)}
+.tbl{width:100%;border-collapse:collapse;margin:14px 0;font-size:15px}
+.tbl th,.tbl td{padding:9px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.tbl th{font-size:13px;color:var(--muted);font-weight:700}
+.tbl code{font-size:14px}
+.scroll{overflow-x:auto}
+.bad{color:#d7263d;font-weight:700}.good{color:#1d8a4e;font-weight:700}
+</style></head><body><div class="wrap lesson">
+<header><a class="logo" href="../" style="color:inherit;text-decoration:none"><picture><source srcset="../mark-dark.svg" media="(prefers-color-scheme: dark)"><img class="mark" src="../mark.svg" alt=""></picture>知識共享 ShareKnowledge</a></header>
+<div class="crumb"><a href="../">首頁</a> / 課程</div>
+<span class="tag">Day 15</span>
+<h1>店家自己的扭蛋機：一張卡只能抽一次</h1>
+<p class="lead">午後豆花（虛構）要辦三週年活動：買滿 100 元送一張抽獎卡，客人用手機掃卡上的 QR code 抽獎。去年用免費的抽獎網頁，遇到四個問題：再載入一次就能一直抽、頭獎沒有上限、客人拿截圖來換、活動結束不知道發了多少。這一課請 Claude Code 做一台有店家招牌的扭蛋機網頁、300 張每張都不一樣的抽獎卡，和一個店員核銷頁，最後放上網。不會的，就問 Claude。</p>
+<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/AOmnH2ceRrA?list=PLaAuH9dstA6Q" title="Day 15｜店家自己的扭蛋機：一張卡只能抽一次" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<p class="src">看不到影片？<a href="https://www.youtube.com/watch?v=AOmnH2ceRrA&amp;list=PLaAuH9dstA6Q">到 YouTube 觀看</a>。三十秒精華在 <a href="https://www.youtube.com/playlist?list=PLLv0kZ0Yf5bI">AI 實戰短片播放清單</a>。</p>
+<div class="three">
+  <div><b>你需要</b><span>Claude 付費方案（用 Claude Code，<a href="day04.html">Day 4</a>）、Cloudflare 免費帳號（<a href="day11.html">Day 11</a> 開過）。</span></div>
+  <div><b>做出來的東西</b><span>客人掃卡抽獎的扭蛋機網頁、300 張可列印的抽獎卡 PDF（另有 10 張測試卡）、店員核銷頁、發獎統計頁、店員操作說明。</span></div>
+  <div><b>為什麼不用免費抽獎網頁</b><span>它們多半在客人的手機上抽、機率寫在網頁裡，不能「一張收據一次」，也沒有每天的獎品上限和店員核銷。</span></div>
+</div>
+
+<h2>A｜先把規則說清楚：規劃模式</h2>
+<ol class="steps">
+  <li>開一個資料夾，放兩樣東西：<b>活動說明</b>（獎品、數量、期限、去年遇到的問題、店裡的狀況）和<b>店的招牌圖</b>。可以參考<a href="files/day15/三週年活動範例.md">示範用的活動說明</a>。</li>
+  <li>打開電腦版 Claude 的 <b>Code</b> 分頁，選這個資料夾，輸入框下面的模式選 <b>規劃</b>（<a href="day08.html">Day 8</a> 教過：只看、只想、只寫計畫，不動檔案）。</li>
+  <li>貼上下面這段。</li>
+</ol>
+<div class="prompt pre">資料夾裡的「三週年活動.md」是我們店的活動說明，logo.png 是招牌。請幫我做一台抽獎扭蛋機網頁：
+1. 客人用手機掃抽獎卡上的 QR code，按一下，扭蛋機轉、掉出一顆蛋，顯示抽到什麼。
+2. 獎品和每天上限照活動說明；去年遇到的四個問題都要避免。
+3. 店員用平板開核銷頁，掃客人的卡就知道抽到什麼、換過了沒。
+4. 做 300 張可以印的抽獎卡 PDF，每張一個 QR code。
+5. 最後要放上網，我已經有 Cloudflare 的免費帳號。
+我不會寫程式。先用規劃模式跟我說你打算怎麼做，有不清楚的先問我。<button>複製</button></div>
+<p>它沒有馬上動手，先問了四個只有店家能決定的問題：中獎機率要大方還是保守、頭獎要分散在不同天開出還是看運氣、頭獎「一個月免費吃」店員要怎麼記、抽到之後什麼時候可以換。每一題都附建議，選好按提交。</p>
+<figure class="shot"><img src="files/day15/ask.webp" width="1400" height="846" loading="lazy" alt="規劃模式先問問題"><figcaption>實際畫面（2026 年 11 月 26 日，付費帳號、Sonnet 5.5、規劃模式）：活動說明沒寫中獎機率，它先問。</figcaption></figure>
+<p>然後它寫出計畫，還有一張表把去年的四個問題一個一個對上做法。看懂了再按接受，它才開始動手。</p>
+<figure class="shot"><img src="files/day15/plan.webp" width="1400" height="846" loading="lazy" alt="計畫"><figcaption>計畫裡的「去年的四個問題怎麼避免」。</figcaption></figure>
+
+<h2>B｜結果放在雲端：前端、後端</h2>
+<p>免費抽獎網頁為什麼再載入一次就能一直抽？因為抽獎是在客人的手機上算的。客人手機上看到的畫面叫<b>前端</b>；真正抽獎、記錄每張卡抽過沒有、今天頭獎剩幾個，放在雲端的伺服器上做，叫<b>後端</b>。結果存在後端，換手機、清瀏覽器、再載入，看到的都是同一個結果。</p>
+<p>程式寫好，它要在你的電腦上先跑起來看，跑之前會跳出「是否允許」的詢問。<b>允許還是拒絕，由你自己按</b>。它還自己測了「同時」的情況：</p>
+<figure class="shot"><img src="files/day15/test.webp" width="1400" height="846" loading="lazy" alt="同時抽、同時核銷的測試"><figcaption>同一張卡同時抽 60 次只有一個結果，同時核銷 40 次只成功 1 次。</figcaption></figure>
+
+<h2>C｜一張卡一次</h2>
+<p>它做了 300 張抽獎卡（A4 一頁 10 張、名片大小，附裁切線），每張的 QR code 是一串隨機代碼，猜不到別人的卡；另外 10 張「測試卡」給活動前試抽、試核銷，不算正式名額。</p>
+<figure class="shot"><img src="files/day15/phone.webp" width="1400" height="846" loading="lazy" alt="手機上的扭蛋機"><figcaption>上線網站的實際畫面（測試卡）：掃卡打開、按「轉一下」、抽到二獎。再載入一次，看到的還是同一個結果。</figcaption></figure>
+<table class="tbl"><tr><th>獎項</th><th>內容</th><th>上限</th></tr>
+<tr><td>頭獎</td><td>一個月豆花免費吃（每天一碗）</td><td>每天 1 個、共 5 個，系統事先分散在不同天</td></tr>
+<tr><td>二獎</td><td>招牌豆花一碗</td><td>每天 10 個</td></tr>
+<tr><td>三獎</td><td>加料一份</td><td>不限</td></tr>
+<tr><td>參加獎</td><td>下次消費折 5 元</td><td>不限</td></tr></table>
+
+<h2>D｜放上網，交給店員</h2>
+<p>部署前它先問：要放到這台電腦登入的 Cloudflare 帳號嗎？卡印好之後網址就不能改。確定之後它把網站放到 Cloudflare Workers（免費方案，300 張卡的用量綽綽有餘），再用正式網址產生抽獎卡 PDF。<b>卡要等網址確定才能印。</b></p>
+<figure class="shot"><img src="files/day15/staff.webp" width="1400" height="846" loading="lazy" alt="店員核銷頁"><figcaption>店員核銷頁（平板尺寸、測試卡）：綠色「可以兌換」，按確認兌換會再問一次「收到實體卡了嗎」。同一張再掃，就是紅色「已兌換過」。</figcaption></figure>
+<p>最後它交一份總結：去年的四個問題、現在的做法、每一項的測試結果，還模擬了 400 場活動確認獎品不會發過頭。另外寫了一份店員操作說明，可以印出來放櫃台。</p>
+<figure class="shot"><img src="files/day15/summary.webp" width="1400" height="846" loading="lazy" alt="總結"><figcaption>它最後交的總結。</figcaption></figure>
+<p><b>送印前</b>：店員密碼要你自己在終端機設定；用測試卡在手機和平板上試一輪；實體卡收好，不要放在客人拍得到的地方。</p>
+
+<h2>今天的作業</h2>
+<h3>寫一份活動說明</h3>
+<p>獎品、各有幾個、期限，還有你最怕發生的事。</p>
+<h3>用規劃模式交給 Claude Code</h3>
+<p>它問什麼就答什麼，看懂計畫再按接受。要在你電腦上跑程式、要放上網，它都會先問，允許還是拒絕你自己按。</p>
+<h3>先在自己電腦上試</h3>
+<p>用測試卡抽幾次、核銷幾次，確定沒問題再放上網、再印卡。卡住了，就把畫面截圖問 Claude。</p>
+<p>下一課：Day 16，三個月的 LINE 對話，變成一張需求變更清單。</p>
+
+<h2>官方來源</h2>
+<ul class="src">
+  <li><a href="https://developers.cloudflare.com/workers/platform/pricing/">Cloudflare Workers 方案與免費額度</a></li>
+  <li><a href="https://developers.cloudflare.com/durable-objects/">Cloudflare Durable Objects（這次存抽獎結果用的）</a></li>
+  <li><a href="https://code.claude.com/docs/en/overview">Claude Code 官方文件</a></li>
+</ul>
+<p class="src">資料查證日期：2026 年 11 月 26 日。午後豆花、獎品、抽獎卡都是示範用的假資料，示範網站拍完已關閉。畫面是用付費帳號、電腦版 Claude 實際操作的樣子。</p>
+
+<footer><a href="../">首頁</a><a href="../privacy.html">隱私權政策</a><span>© 2026 知識共享</span></footer>
+</div>
+<script>
+(function(){
+  function cp(t,b){(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){b.textContent='已複製';setTimeout(function(){b.textContent='複製'},1500)},function(){});}
+  document.querySelectorAll('.prompt button').forEach(function(b){b.onclick=function(){cp(b.parentNode.firstChild.textContent.trim(),b)}});
+  document.querySelectorAll('.tbl .copy').forEach(function(b){b.onclick=function(){cp(b.closest('tr').querySelector('code').textContent.trim(),b)}});
+})();
+</script>
+</body></html>
